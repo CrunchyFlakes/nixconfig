@@ -718,7 +718,7 @@ return require("lazy").setup({
       shade_terminals = false,
       hide_numbers = true, -- hide the number column in toggleterm buffers
       autochdir = false, -- when neovim changes it current directory the terminal will change it's own when next it's opened
-      start_in_insert = true,
+      start_in_insert = false,
       insert_mappings = true, -- whether or not the open mapping applies in insert mode
       terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
       persist_size = true,
