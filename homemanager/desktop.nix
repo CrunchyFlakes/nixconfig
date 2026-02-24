@@ -44,6 +44,25 @@ let
       de
     ];
   keepass-database = "~/drive/Passwords.kdbx";
+  run-cwd-sway = pkgs.writeShellScript "run-cwd-sway.sh" ''
+    if FOCUSED=$(swaymsg -t get_tree | jq -e '.. | select(.type?) | select(.focused) | .pid') && [ -n "$FOCUSED" ]; then
+      # cwd of first-level child is usually more useful (e.g. shell proc forked from terminal emulator)
+      # but fallback to the cwd of the focused app if no children procs
+      #
+      echo $FOCUSED
+      for pid in $(cat "/proc/$FOCUSED/task"/*/children) $FOCUSED; do
+        # Ignores kitten for kitty terminal as that only does cleanup
+        child_name=$(cat "/proc/$pid/cmdline")
+        if cwd=$(readlink -e "/proc/$pid/cwd") && [ -n "$cwd" ] && [[ ! $child_name =~ "kitten" ]]; then
+
+          echo $pid
+          echo $cwd
+          cd "$cwd" && break
+        fi
+      done
+    fi
+    exec "$@"
+  '';
 in
 {
   imports = [ ./devel.nix ];
@@ -144,6 +163,12 @@ in
   home.sessionVariables = {
     VISUAL = "nvim";
     NIXOS_OZONE_WL = "1";
+  };
+
+  home.file.".config/sway/nix-managed" = {
+    text = ''
+      set $run-cwd ${run-cwd-sway}
+    '';
   };
 
   programs.ssh = {

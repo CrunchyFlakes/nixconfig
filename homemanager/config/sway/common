@@ -56,7 +56,7 @@ output * bg ~/.config/sway/wallpapers/gruvbox-dark-rainbow-square.png fill
 # Basics:
 #
     # Start a terminal
-    bindsym $mod+Return exec swaymsg exec $term
+    bindsym $mod+Return exec swaymsg exec $run-cwd $term
 
     # Kill focused window
     bindsym $mod+Shift+q kill

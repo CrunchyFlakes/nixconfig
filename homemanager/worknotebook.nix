@@ -18,6 +18,7 @@
     text = ''
       include worknotebook
       include common
+      include nix-managed
     '';
   };
 }

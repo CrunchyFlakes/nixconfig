@@ -37,6 +37,7 @@
     text = ''
       include maltepc
       include common
+      include nix-managed
     '';
   };
 

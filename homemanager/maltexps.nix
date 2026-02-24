@@ -18,6 +18,7 @@
     text = ''
       include maltexps
       include common
+      include nix-managed
     '';
   };
 }

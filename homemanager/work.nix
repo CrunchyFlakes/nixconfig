@@ -15,6 +15,7 @@
     text = ''
       include workpc
       include common
+      include nix-managed
     '';
   };
 
