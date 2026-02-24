@@ -18,6 +18,10 @@ vim.keymap.set("n", "<A-CR>", ":ToggleTerm<CR>")
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 vim.keymap.set("t", "<A-CR>", "<C-\\><C-n>:ToggleTerm<CR>")
 
+-- ToggleTerm
+vim.keymap.set("n", "<C-A-/>", ":ToggleTerm direction=float<CR>")
+vim.keymap.set("n", "<A-/>", ":ToggleTerm direction=horizontal<CR>")
+
 -- Telescope bindings
 local builtin = require('telescope.builtin')
 local project = require('telescope').extensions.project

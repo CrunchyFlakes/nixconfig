@@ -706,7 +706,41 @@ return require("lazy").setup({
   },
   {
     "akinsho/toggleterm.nvim",
-    config = true,
+    opts = {
+      -- size can be a number or function which is passed the current terminal
+      size = function(term)
+        if term.direction == "horizontal" then
+          return 15
+        elseif term.direction == "vertical" then
+          return vim.o.columns * 0.4
+        end
+      end,
+      open_mapping = [[<A-/>]],
+      hide_numbers = true, -- hide the number column in toggleterm buffers
+      autochdir = false, -- when neovim changes it current directory the terminal will change it's own when next it's opened
+      start_in_insert = true,
+      insert_mappings = true, -- whether or not the open mapping applies in insert mode
+      terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
+      persist_size = true,
+      persist_mode = true, -- if set to true (default) the previous terminal mode will be remembered
+      -- direction = 'vertical' | 'horizontal' | 'tab' | 'float',
+      close_on_exit = true, -- close the terminal window when the process exits
+      clear_env = false, -- use only environmental variables from `env`, passed to jobstart()
+      auto_scroll = true, -- automatically scroll to the bottom on terminal output
+      -- This field is only relevant if direction is set to 'float'
+      winbar = {
+        enabled = false,
+        name_formatter = function(term) --  term: Terminal
+          return term.name
+        end
+      },
+      responsiveness = {
+        -- breakpoint in terms of `vim.o.columns` at which terminals will start to stack on top of each other
+        -- instead of next to each other
+        -- default = 0 which means the feature is turned off
+        horizontal_breakpoint = 135,
+      },
+    },
   },
   {
     "chaoren/vim-wordmotion",
@@ -720,7 +754,7 @@ return require("lazy").setup({
           save = 'local_file',
         },
       }
-    end
+    end,
   },
   {
     "Exafunction/windsurf.nvim",
