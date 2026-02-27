@@ -79,6 +79,7 @@ in
       mpv
       steam-run
       obsidian
+      papis
       zotero
       sqlite
       # neovim and plugin dependencies {{{
