@@ -327,6 +327,10 @@ in
     name = "Mattermost";
     exec = "${pkgs.mattermost}/bin/mattermost --enable-ozone --ozone-platform=wayland --disable-gpu %U";
   };
+  xdg.desktopEntries."spotify" = {
+    name = "Spotify";
+    exec = "spotify --enable-ozone --ozone-platform=wayland --disable-gpu %U";
+  };
 
   programs.direnv = {
     enable = true;
