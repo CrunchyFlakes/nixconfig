@@ -3,6 +3,7 @@
   pkgs,
   nixpkgs-unstable,
   lib,
+  inputs,
   ...
 }:
 let
@@ -335,6 +336,7 @@ in
   programs.direnv = {
     enable = true;
     enableZshIntegration = true;
+    enableNushellIntegration = true;
     nix-direnv.enable = true;
   };
 
@@ -345,6 +347,7 @@ in
 
   programs.eza = {
     enable = true;
+    enableNushellIntegration = true;
     git = true;
     colors = "auto";
   };
@@ -382,6 +385,7 @@ in
     enable = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
+    enableNushellIntegration = true;
   };
 
   # use config folder
@@ -427,6 +431,16 @@ in
       if(status) then
         ts_install.compilers = { "${pkgs.gcc_multi}/bin/gcc" }
       end
+    '';
+  };
+
+  programs.starship = {
+    enableNushellIntegration = true;
+  };
+  programs.nushell = {
+    enable = true;
+    extraConfig = ''
+      overlay use ${inputs.nushell-git-aliases}
     '';
   };
   programs.kitty = {
@@ -519,6 +533,7 @@ in
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableNushellIntegration = true;
   };
 
   services.fnott = {

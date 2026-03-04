@@ -213,6 +213,18 @@
         "type": "github"
       }
     },
+    "nushell-git-aliases": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-fHubiGjAswaN228gtvRxZV3MppWLVA9uuTkbd5wDg24=",
+        "type": "file",
+        "url": "https://raw.githubusercontent.com/KamilKleina/git-aliases.nu/refs/heads/main/git-aliases.nu"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://raw.githubusercontent.com/KamilKleina/git-aliases.nu/refs/heads/main/git-aliases.nu"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -223,6 +235,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "nushell-git-aliases": "nushell-git-aliases",
         "spicetify-nix": "spicetify-nix",
         "yeetmouse": "yeetmouse"
       }

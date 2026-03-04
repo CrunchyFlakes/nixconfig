@@ -37,6 +37,10 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nushell-git-aliases = {
+      url = "https://raw.githubusercontent.com/KamilKleina/git-aliases.nu/refs/heads/main/git-aliases.nu";
+      flake = false;
+    };
   };
 
   outputs =
@@ -52,6 +56,7 @@
       deploy-rs,
       yeetmouse,
       nix-index-database,
+      nushell-git-aliases,
       ...
     }@inputs:
     rec {
@@ -76,7 +81,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.mtoepperwien = import ./homemanager/worknotebook.nix;
-              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; };
+              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; inherit inputs; };
             }
             nix-index-database.nixosModules.nix-index
           ];
@@ -102,7 +107,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.mtoepperwien = import ./homemanager/workpc.nix;
-              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; };
+              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; inherit inputs; };
             }
             nix-index-database.nixosModules.nix-index
           ];
@@ -134,7 +139,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.mtoepperwien = import ./homemanager/maltepc.nix;
-              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; };
+              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; inherit inputs; };
             }
             yeetmouse.nixosModules.default
             nix-index-database.nixosModules.nix-index
@@ -161,7 +166,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.mtoepperwien = import ./homemanager/maltexps.nix;
-              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; };
+              home-manager.extraSpecialArgs = { inherit nixpkgs-unstable; inherit inputs; };
             }
             yeetmouse.nixosModules.default
             nixos-hardware.nixosModules.dell-xps-13-9370

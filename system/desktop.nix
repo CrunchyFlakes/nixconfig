@@ -94,7 +94,7 @@
       "input"
       "kvm"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.nushell;
     openssh.authorizedKeys.keyFiles = [
       ../authorized_keys
     ];
