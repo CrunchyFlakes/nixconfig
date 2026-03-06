@@ -190,11 +190,11 @@ in
         controlPersist = "10h";
       };
       workCluster = {
-        match = "originalhost luis-cluster*,work*,kisski-cluster* exec \"! nc -zw1 %h 22\"";
+        match = "originalhost luis-cluster*,work*,kisski-cluster* exec \"bash -c '! nc -zw1 %h 22'\"";
         proxyJump = "work-jump";
       };
       pc2Cluster = {
-        match = "originalhost n2-jumphost exec \"! nc -zw1 %h 22\"";
+        match = "originalhost n2-jumphost exec \"bash -c '! nc -zw1 %h 22'\"";
         proxyJump = "workpc";
       };
       homepc = {
@@ -347,9 +347,16 @@ in
 
   programs.eza = {
     enable = true;
+    enableZshIntegration = true;
     enableNushellIntegration = true;
     git = true;
     colors = "auto";
+  };
+
+  programs.carapace = {
+    enable = true;
+    enableZshIntegration = true;
+    enableNushellIntegration = true;
   };
 
   programs.git = {
@@ -441,6 +448,11 @@ in
     enable = true;
     extraConfig = ''
       overlay use ${inputs.nushell-git-aliases}
+      $env.config.cursor_shape = {
+        emacs: line
+        vi_insert: line
+        vi_normal: line
+      }
     '';
   };
   programs.kitty = {
