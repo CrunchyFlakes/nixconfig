@@ -45,6 +45,19 @@
     cups-browsed
     gutenprint
   ];
+  # hardware.printers = {
+  #   ensurePrinters = [
+  #     {
+  #       name = "AI-ML Kitchen";
+  #       location = "Kitchen";
+  #       deviceUri = "http://prn-1101-004-a417-1.print.uni-hannover.de";
+  #       model = "drv:///sample.drv/generic.ppd";
+  #       ppdOptions = {
+  #         PageSize = "A4";
+  #       };
+  #     }
+  #   ];
+  # };
 
   virtualisation.libvirtd = {
     enable = true;
