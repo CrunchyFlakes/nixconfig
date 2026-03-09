@@ -185,6 +185,8 @@ in
       network.max_open_files.set = 600
       network.max_open_sockets.set = 100
 
+      network.port_random.set = no
+
       # Peer settings
       throttle.min_peers.normal.set = 39
       throttle.max_peers.normal.set = 40
@@ -244,7 +246,7 @@ in
   };
 
   systemd.services."natpmp-forward" = {
-    enable = true;
+    enable = false;
     description = "Port forward natpmp open port so that public port matches private port";
     requires = [ "natpmp-proton.service" ];
     after = [ "natpmp-proton.service" ];
@@ -290,7 +292,7 @@ in
         ExecStart = lib.mkForce (
           pkgs.writers.writeBash "start-rtorrent" ''
             echo "${config.services.rtorrent.package}/bin/rtorrent -n -o system.daemon.set=true -o import=${configFile} -o network.port_range.set=$TCPPORTPUBLIC-$TCPPORTPUBLIC -o dht.port.set=$UDPPORTPUBLIC"
-            ${config.services.rtorrent.package}/bin/rtorrent -n -o system.daemon.set=true -o import=${configFile} -o network.port_range.set=$TCPPORTPUBLIC-$((TCPPORTPUBLIC+1)) -o dht.port.set=$UDPPORTPUBLIC
+            ${config.services.rtorrent.package}/bin/rtorrent -n -o system.daemon.set=true -o import=${configFile} -o network.port_range.set=$TCPPORTPUBLIC-TCPPORTPUBLIC+1 -o dht.port.set=$UDPPORTPUBLIC
           ''
         );
       };

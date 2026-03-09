@@ -71,6 +71,9 @@ in
   home.packages =
     with pkgs;
     [
+      (ollama.override {
+        acceleration = "cuda";
+      })
       alacritty
       warp-terminal
       element-desktop
@@ -442,6 +445,7 @@ in
   };
 
   programs.starship = {
+    enable = true;
     enableNushellIntegration = true;
   };
   programs.nushell = {

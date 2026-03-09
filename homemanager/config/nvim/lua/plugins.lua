@@ -674,6 +674,24 @@ return require("lazy").setup({
     },
     config = true
   },
+  -- {
+  --   "jghauser/papis.nvim",
+  --   dependencies = {
+  --     "kkharji/sqlite.lua",
+  --     "MunifTanjim/nui.nvim",
+  --     -- If not already installed, you may also want one of:
+  --     -- "hrsh7th/nvim-cmp",
+  --     -- "saghen/blink.cmp",
+  --
+  --     -- Choose one of the following two if not already installed:
+  --     -- "nvim-telescope/telescope.nvim",
+  --     -- "folke/snacks.nvim",
+  --
+  --   },
+  --   opts = {
+  --     enable_keymaps = true,
+  --   },
+  -- },
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
