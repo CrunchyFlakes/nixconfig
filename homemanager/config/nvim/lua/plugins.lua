@@ -70,14 +70,12 @@ return require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     version = "*",
-    build = function()
-      local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
-      ts_update()
-    end,
+    build = ":TSUpdate",
     lazy = false,
     config = function()
-      require("nvim-treesitter").setup({
+      require("nvim-treesitter.configs").setup({
         auto_install = true,
+        ensure_installed = { "c", "python", "markdown", "lua", "bash", "bibtex", "csv", "git_config" , "git_rebase" , "gitattributes" , "gitcommit" , "gitignore" , "html", "json", "latex", "make", "nix", "regex", "toml", "yaml" },
         highlight = {
           enable = true
         },
@@ -373,7 +371,7 @@ return require("lazy").setup({
 
   {
     "ray-x/navigator.lua",
-    dependencies = { { 'ray-x/guihua.lua', build = 'cd lua/fzy && make' }, { "neovim/nvim-lspconfig" } },
+    dependencies = { { 'ray-x/guihua.lua', build = 'sh -c "cd lua/fzy && make"' }, { "neovim/nvim-lspconfig" } },
     config = function()
       require('navigator').setup({
         lsp = {
