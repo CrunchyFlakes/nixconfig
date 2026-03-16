@@ -71,9 +71,6 @@ in
   home.packages =
     with pkgs;
     [
-      (ollama.override {
-        acceleration = "cuda";
-      })
       alacritty
       warp-terminal
       element-desktop

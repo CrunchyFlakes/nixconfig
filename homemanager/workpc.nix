@@ -1,6 +1,8 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, nixpkgs-unstable, ... }:
 
-{
+let
+  pkgs-unstable = import nixpkgs-unstable { system = pkgs.system; config.allowUnfree = true; };
+in {
   home.username = "mtoepperwien";
   home.homeDirectory = "/home/mtoepperwien";
   home.stateVersion = "25.05";
@@ -10,8 +12,10 @@
     ./work.nix
   ];
 
-  home.packages = with pkgs; [
-    btop-cuda
+  home.packages = [
+    pkgs-unstable.ollama-cuda
+    pkgs-unstable.claude-code
+    pkgs.btop-cuda
   ];
 
   home.file.".config/sway/config" = {

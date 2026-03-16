@@ -66,6 +66,7 @@
           specialArgs = {
             inherit inputs;
             inherit nixpkgs-stable;
+            inherit nixpkgs-unstable;
           };
           modules = [
             ./graphical/options.nix
@@ -91,6 +92,7 @@
           specialArgs = {
             inherit inputs;
             inherit nixpkgs-stable;
+            inherit nixpkgs-unstable;
           };
           modules = [
             ./graphical/options.nix
