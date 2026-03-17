@@ -246,7 +246,7 @@ in
   };
 
   systemd.services."natpmp-forward" = {
-    enable = false;
+    enable = true;
     description = "Port forward natpmp open port so that public port matches private port";
     requires = [ "natpmp-proton.service" ];
     after = [ "natpmp-proton.service" ];
