@@ -148,6 +148,9 @@ return require("lazy").setup({
       vim.api.nvim_create_autocmd("FileType", { pattern = "TelescopeResults", command = "setlocal nofoldenable", })
       require('telescope').setup({
         pickers = {
+          live_grep = {
+            find_command = { "rg", "--hidden", "--glob", "!**/.git/*", "-L" },
+          },
           find_files = {
             find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", "-L" },
             mappings = {
@@ -370,15 +373,14 @@ return require("lazy").setup({
   -- nvim-lsp setup }}}
 
   {
-    "ray-x/navigator.lua",
-    dependencies = { { 'ray-x/guihua.lua', build = 'sh -c "cd lua/fzy && make"' }, { "neovim/nvim-lspconfig" } },
+    'nvimdev/lspsaga.nvim',
     config = function()
-      require('navigator').setup({
-        lsp = {
-          format_on_save = false,
-        }
-      })
-    end
+      require('lspsaga').setup({})
+    end,
+    dependencies = {
+        'nvim-treesitter/nvim-treesitter', -- optional
+        'nvim-tree/nvim-web-devicons',     -- optional
+    },
   },
   { "karb94/neoscroll.nvim", config = function() require('neoscroll').setup() end },
   {

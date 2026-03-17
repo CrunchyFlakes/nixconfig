@@ -9,6 +9,13 @@ vim.keymap.set("n", "<leader>qo", ":lopen<CR>")  -- open quickfix window
 vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
 vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename)
 
+-- Lspsaga
+vim.keymap.set("n", "<leader>ld", ":Lspsaga goto_definition<CR>")
+vim.keymap.set("n", "<leader>lr", ":Lspsaga finder<CR>")
+vim.keymap.set("n", "<leader>lci", ":Lspsaga incoming_calls<CR>")
+vim.keymap.set("n", "<leader>lco", ":Lspsaga outgoing_calls<CR>")
+vim.keymap.set("n", "<leader>lo", ":Lspsaga outline<CR>")
+
 -- Windows
 vim.keymap.set("n", "<A-h>", "<C-w>h")
 vim.keymap.set("n", "<A-j>", "<C-w>j")
