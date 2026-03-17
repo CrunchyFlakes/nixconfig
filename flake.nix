@@ -73,7 +73,7 @@
             disko.nixosModules.disko
             ./system/worknotebook.nix
             ./graphical/window_manager.nix
-            ./common.nix
+            ./common/system.nix
             ./ssd.nix
             agenix.nixosModules.default
             spicetify-nix.nixosModules.default
@@ -99,9 +99,9 @@
             disko.nixosModules.disko
             ./system/work.nix
             ./graphical/window_manager.nix
-            ./common.nix
+            ./common/system.nix
             ./ssd.nix
-            ./ssh.nix
+            ./common/ssh.nix
             agenix.nixosModules.default
             spicetify-nix.nixosModules.default
             home-manager.nixosModules.home-manager
@@ -130,10 +130,10 @@
             ./graphical/options.nix
             ./system/maltepc.nix
             ./graphical/window_manager.nix
-            ./common.nix
+            ./common/system.nix
             ./dns.nix
             ./ssd.nix
-            ./ssh.nix
+            ./common/ssh.nix
             agenix.nixosModules.default
             spicetify-nix.nixosModules.default
             home-manager.nixosModules.home-manager
@@ -157,7 +157,7 @@
             ./graphical/options.nix
             ./system/maltexps.nix
             ./graphical/window_manager.nix
-            ./common.nix
+            ./common/system.nix
             ./dns.nix
             ./ssd.nix
             ./programs/ppti.nix
@@ -184,8 +184,8 @@
           modules = [
             ./graphical/options.nix
             ./system/pi3.nix
-            ./ssh.nix
-            ./common.nix
+            ./common/ssh.nix
+            ./common/system.nix
             ./dns.nix
             agenix.nixosModules.default
             nix-index-database.nixosModules.nix-index
@@ -199,23 +199,11 @@
           };
           modules = [
             ./graphical/options.nix
-            ./system/server_variables.nix
             ./system/pi4.nix
-            ./ssh.nix
-            ./common.nix
+            ./common/ssh.nix
+            ./common/system.nix
             ./dns.nix
-            ./programs/nginx.nix
-            ./programs/postgresql.nix
-            ./programs/gitea.nix
-            ./programs/kodi_nfs.nix
-            ./programs/usenet.nix
-            ./network/proton_wireguard.nix
-            ./programs/torrent.nix
-            ./programs/irc.nix
-            ./programs/navidrome.nix
-
             agenix.nixosModules.default
-            nixos-hardware.nixosModules.raspberry-pi-4
             nix-index-database.nixosModules.nix-index
           ];
         };
@@ -231,8 +219,8 @@
             ./system/server_variables.nix
             ./system/server.nix
             ./system/hardware/server.nix
-            ./ssh.nix
-            ./common.nix
+            ./common/ssh.nix
+            ./common/system.nix
             ./dns.nix
             ./programs/nginx.nix
             ./programs/postgresql.nix
@@ -241,7 +229,7 @@
             ./programs/usenet.nix
             ./network/proton_wireguard.nix
             ./programs/torrent.nix
-            #./programs/irc.nix
+            ./programs/irc.nix
             ./programs/navidrome.nix
             ./programs/monitoring.nix
             ./programs/jellyfin.nix

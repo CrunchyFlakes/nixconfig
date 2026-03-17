@@ -13,6 +13,7 @@
     ../graphical/greetd.nix
     ./desktop.nix
     ../graphical/options.nix
+    ../common/gpu.nix
   ];
   environment.systemPackages = with pkgs; [
     clinfo
@@ -20,7 +21,7 @@
     cudaPackages.cuda_nvcc
     cudaPackages.cuda_opencl
   ];
-  # Use extra caches for packages
+
   nix.settings.substituters = [
     "https://nix-community.cachix.org"
     "https://cache.nixos-cuda.org"
@@ -46,7 +47,6 @@
       ]
     ) (if builtins.isList p.meta.license then p.meta.license else [ p.meta.license ]);
 
-
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.initrd.availableKernelModules = [
@@ -54,33 +54,6 @@
   ];
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
   networking.firewall.allowedUDPPorts = [ 9 ];
-
-  # gpu
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version = "580.126.18";
-      sha256_64bit = "sha256-p3gbLhwtZcZYCRTHbnntRU0ClF34RxHAMwcKCSqatJ0="; 
-      sha256_aarch64 = "sha256-pruxWQlLurymRL7PbR24NA6dNowwwX35p6j9mBIDcNs=";
-      openSha256 = "sha256-1Q2wuDdZ6KiA/2L3IDN4WXF8t63V/4+JfrFeADI1Cjg=";
-      settingsSha256 = "sha256-QMx4rUPEGp/8Mc+Bd8UmIet/Qr0GY8bnT/oDN8GAoEI=";
-      persistencedSha256 = lib.fakeSha256;
-    };
-    modesetting.enable = true;
-    open = true;
-  };
-  hardware.nvidia-container-toolkit.enable = true;
-  programs.sway.extraOptions = [ "--unsupported-gpu" ];
-  # vulkan
-  hardware.graphics.extraPackages = with pkgs; [
-    vulkan-tools
-    vulkan-headers
-    vulkan-loader
-  ];
 
   nix.settings.max-jobs = 10;
   nix.settings.cores = 10;

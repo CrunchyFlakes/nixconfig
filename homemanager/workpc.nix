@@ -6,10 +6,11 @@ in {
   home.username = "mtoepperwien";
   home.homeDirectory = "/home/mtoepperwien";
   home.stateVersion = "25.05";
+  nixpkgs.config.allowUnfree = true;
 
   imports = [
     ./desktop.nix
-    ./work.nix
+    ../common/desktop.nix
   ];
 
   home.packages = [
