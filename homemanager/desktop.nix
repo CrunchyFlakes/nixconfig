@@ -79,6 +79,7 @@ in
       fnott
       mpv
       steam-run
+      morgen
       obsidian
       papis
       zotero
@@ -245,6 +246,27 @@ in
         user = "root";
         extraOptions."HostKeyAlias" = "workpc-bootup";
       };
+      otus-jumphost = {
+        hostname = "fe.otus.pc2.uni-paderborn.de";
+        user = "inxml20";
+        identityFile = "~/.config/ssh/yubikey.pub";
+        identitiesOnly = true;
+      };
+      otus-login1 = {
+        hostname = "login1.ln2025.pc2.uni-paderborn.de";
+        user = "inxml20";
+        proxyJump = "otus-jumphost";
+        identityFile = "~/.config/ssh/yubikey.pub";
+        identitiesOnly = true;
+      };
+      otus-login2 = {
+        hostname = "login2.ln2025.pc2.uni-paderborn.de";
+        user = "inxml20";
+        proxyJump = "otus-jumphost";
+        identityFile = "~/.config/ssh/yubikey.pub";
+        identitiesOnly = true;
+      };
+
       n2-jumphost = {
         hostname = "fe.noctua2.pc2.uni-paderborn.de";
         user = "inxml20";
@@ -454,6 +476,8 @@ in
         vi_insert: line
         vi_normal: line
       }
+      $env.CARAPACE_LENIENT = 1
+      $env.CARAPACE_BRIDGES = "zsh,fish,bash"
     '';
   };
   programs.kitty = {

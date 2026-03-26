@@ -1,2 +1,5 @@
 .direnv
 .envrc
+CLAUDE.md
+.claude/
+IMPLEMENTATION_PLAN.md
