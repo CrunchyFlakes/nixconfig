@@ -674,6 +674,19 @@ return require("lazy").setup({
     },
     config = true
   },
+  {
+  'barrettruth/diffs.nvim',
+  init = function()
+    vim.g.diffs = {
+      integrations = {
+        fugitive = true,
+        neogit = true,
+        neojj = true,
+        gitsigns = true,
+      }
+    }
+  end,
+  },
   -- {
   --   "jghauser/papis.nvim",
   --   dependencies = {
