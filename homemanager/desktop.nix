@@ -199,7 +199,7 @@ in
         proxyJump = "work-jump";
       };
       pc2Cluster = {
-        match = "originalhost n2-jumphost exec \"bash -c '! nc -zw1 %h 22'\"";
+        match = "originalhost n2-jumphost,otus-jumphost exec \"bash -c '! nc -zw1 %h 22'\"";
         proxyJump = "workpc";
       };
       homepc = {
