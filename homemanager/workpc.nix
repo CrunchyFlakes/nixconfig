@@ -14,7 +14,6 @@ in {
 
   home.packages = [
     pkgs-unstable.ollama-cuda
-    pkgs-unstable.claude-code
     pkgs.btop-cuda
   ];
 

@@ -7,6 +7,7 @@
   ...
 }:
 let
+  pkgs-unstable = import nixpkgs-unstable { system = pkgs.system; config.allowUnfree = true; };
   lua-packages =
     p: with p; [
       luarocks
@@ -161,6 +162,9 @@ in
     ++ (with nixpkgs-unstable.legacyPackages.${pkgs.system}; [
       neovim-qt
       neovide
+    ])
+    ++ (with pkgs-unstable; [
+      claude-code
     ]);
 
   home.sessionVariables = {
