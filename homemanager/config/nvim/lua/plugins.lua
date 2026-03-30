@@ -364,7 +364,7 @@ return require("lazy").setup({
       require("luasnip.loaders.from_vscode").lazy_load()
       -- Load your custom snippets (Expanded path is required!)
       require("luasnip.loaders.from_lua").lazy_load({
-        paths = { vim.fn.expand("~/.config/nvim/LuaSnip/") }
+        paths = { vim.fn.stdpath("config") .. "/LuaSnip/" }
       })
     end,
   },
@@ -481,6 +481,11 @@ return require("lazy").setup({
   },
   {
     "epwalsh/obsidian.nvim",
+    cond = (function()
+      local home = vim.loop.os_homedir()
+      return vim.uv.fs_stat(home .. "/vaults/personal") ~= nil
+          or vim.uv.fs_stat(home .. "/vaults/phd") ~= nil
+    end)(),
     lazy = true,
     event = "CursorHold",
     version = "*", -- recommended, use latest release instead of latest commit
@@ -502,16 +507,17 @@ return require("lazy").setup({
     },
     opts = {
       ui = { enable = false },
-      workspaces = {
-        {
-          name = "personal",
-          path = "~/vaults/personal",
-        },
-        {
-          name = "phd",
-          path = "~/vaults/phd",
-        },
-      },
+      workspaces = (function()
+        local ws = {}
+        local home = vim.loop.os_homedir()
+        if vim.uv.fs_stat(home .. "/vaults/personal") then
+          table.insert(ws, { name = "personal", path = "~/vaults/personal" })
+        end
+        if vim.uv.fs_stat(home .. "/vaults/phd") then
+          table.insert(ws, { name = "phd", path = "~/vaults/phd" })
+        end
+        return ws
+      end)(),
       daily_notes = {
         folder = "daily_notes",
       },
