@@ -474,13 +474,16 @@ in
   };
   programs.nushell = {
     enable = true;
+    settings = {
+      show_banner = false;
+      cursor_shape = {
+        emacs = "line";
+        vi_insert = "line";
+        vi_normal = "block";
+      };
+    };
     extraConfig = ''
       overlay use ${inputs.nushell-git-aliases}
-      $env.config.cursor_shape = {
-        emacs: line
-        vi_insert: line
-        vi_normal: line
-      }
       $env.CARAPACE_LENIENT = 1
       $env.CARAPACE_BRIDGES = "zsh,fish,bash"
     '';
@@ -624,6 +627,31 @@ in
     scdaemonSettings = {
       disable-ccid = true;
     };
+  };
+
+  programs.zellij = {
+    enable = true;
+    settings = {
+      theme = "gruvbox-dark";
+      focus_follows_mouse = true;
+    };
+    extraConfig = ''
+      keybinds {
+          // keybinds are divided into modes
+          normal {
+              // bind instructions can include one or more keys (both keys will be bound separately)
+              // bind keys can include one or more actions (all actions will be performed with no sequential guarantees)
+              unbind "Ctrl g"
+              bind "Ctrl a" { SwitchToMode "locked"; }
+          }
+          pane {
+          }
+          locked {
+              unbind "Ctrl g"
+              bind "Ctrl a" { SwitchToMode "normal"; }
+          }
+      }
+    '';
   };
 
 

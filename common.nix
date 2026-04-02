@@ -68,6 +68,7 @@
     gnupg
     pinentry-tty
     tmux
+    zellij
     tree
     tealdeer
     unrar
