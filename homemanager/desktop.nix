@@ -431,7 +431,8 @@ in
 
   programs.neovim = {
     enable = true;
-    #package = nixpkgs-unstable.legacyPackages.${pkgs.system}.neovim-unwrapped;
+    defaultEditor = true;
+    package = nixpkgs-unstable.legacyPackages.${pkgs.system}.neovim-unwrapped;
     extraLuaPackages = ps: [
       ps.magick
       ps.luarocks

@@ -146,6 +146,8 @@
     ibus.engines = with pkgs.ibus-engines; [ anthy ];
   };
 
+  programs.mosh.enable = true;
+
   # Yubikey
   hardware.gpgSmartcards.enable = true;
   hardware.ledger.enable = true;

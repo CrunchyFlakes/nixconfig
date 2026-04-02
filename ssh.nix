@@ -22,6 +22,7 @@
     };
   };
   networking.firewall.allowedTCPPorts = [ 22 ];
+  programs.mosh.enable = true;
 
   # Enable luks decryption via ssh
   # This will not activate Wake-on-LAN as it is more system specific
