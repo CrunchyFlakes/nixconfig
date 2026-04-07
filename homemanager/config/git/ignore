@@ -2,4 +2,5 @@
 .envrc
 CLAUDE.md
 .claude/
+.serena/
 IMPLEMENTATION_PLAN.md
