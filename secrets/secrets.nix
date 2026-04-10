@@ -65,4 +65,8 @@ in
     maltexps
     serverhost
   ];
+  "mautrix-whatsapp.age".publicKeys = [
+    maltepc
+    serverhost
+  ];
 }
