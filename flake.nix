@@ -249,6 +249,7 @@
             ./programs/ldap.nix
             ./programs/immich.nix
             ./programs/webdav.nix
+            ./programs/matrix.nix
 
             agenix.nixosModules.default
             nix-index-database.nixosModules.nix-index
