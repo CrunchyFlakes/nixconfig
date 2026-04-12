@@ -25,8 +25,8 @@
     settings = {
       homeserver = {
         # Connect via the nginx reverse proxy (continuwuity only exposes a unix socket)
-        address = "https://matrix.jmtoepperwien.com";
-        domain = "matrix.jmtoepperwien.com";
+        address = "https://matrix.mosi.me";
+        domain = "mosi.me";
       };
       appservice = {
         # continuwuity will push events to the bridge at this address
@@ -36,7 +36,7 @@
       };
       bridge = {
         permissions = {
-          "@jmtoepperwien:matrix.jmtoepperwien.com" = "admin";
+          "@jmtoepperwien:mosi.me" = "admin";
         };
       };
       network = {
@@ -47,6 +47,9 @@
         default = true;
         require = true;
         pickle_key = "$PICKLE_KEY";
+      };
+      backfill = {
+        enabled = true;
       };
     };
   };

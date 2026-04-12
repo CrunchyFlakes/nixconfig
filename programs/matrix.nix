@@ -16,7 +16,7 @@ in
     enable = true;
     settings = {
       global = {
-        server_name = "matrix.jmtoepperwien.com";
+        server_name = "mosi.me";
         allow_registration = false;
         allow_encryption = true;
         allow_federation = true;
@@ -32,22 +32,12 @@ in
   users.users.nginx.extraGroups = [ "continuwuity" ];
 
   # Single cert covering both the bare domain (for .well-known) and the matrix subdomain
-  security.acme.certs."jmtoepperwien.com" = {
-    extraDomainNames = [ "matrix.jmtoepperwien.com" ];
+  security.acme.certs."mosi.me" = {
+    extraDomainNames = [ "matrix.mosi.me" ];
   };
 
   # Bare domain: serves .well-known delegation only
-  services.nginx.virtualHosts."jmtoepperwien.com" = {
-    forceSSL = true;
-    enableACME = true;
-    locations = {
-    };
-  };
-
-  # matrix subdomain: proxies the actual Matrix API
-  services.nginx.virtualHosts."matrix.jmtoepperwien.com" = {
-    forceSSL = true;
-    useACMEHost = "jmtoepperwien.com";
+  services.nginx.virtualHosts."mosi.me" = {
     locations = {
       "= /.well-known/matrix/server" = {
         extraConfig = ''
@@ -57,7 +47,7 @@ in
           add_header Referrer-Policy "origin-when-cross-origin" always;
           add_header X-Frame-Options DENY always;
           add_header X-Content-Type-Options nosniff always;
-          return 200 '{"m.server":"matrix.jmtoepperwien.com:443"}';
+          return 200 '{"m.server":"matrix.mosi.me:443"}';
         '';
       };
       "= /.well-known/matrix/support" = {
@@ -79,9 +69,16 @@ in
           add_header Referrer-Policy "origin-when-cross-origin" always;
           add_header X-Frame-Options DENY always;
           add_header X-Content-Type-Options nosniff always;
-          return 200 '{"m.homeserver":{"base_url":"https://matrix.jmtoepperwien.com"}}';
+          return 200 '{"m.homeserver":{"base_url":"https://matrix.mosi.me"}}';
         '';
       };
+    };
+  };
+  # matrix subdomain: proxies the actual Matrix API
+  services.nginx.virtualHosts."matrix.mosi.me" = {
+    forceSSL = true;
+    useACMEHost = "mosi.me";
+    locations = {
       "/_matrix/" = {
         proxyPass = "http://continuwuity$request_uri";
         extraConfig = ''

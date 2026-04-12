@@ -17,6 +17,13 @@
     "mosildap.duckdns.org"
     "mosiphotos.duckdns.org"
   ];
+  security.acme.certs."mosi.me".extraDomainNames = [
+    "git.mosi.me"
+    "files.mosi.me"
+    "ldap.mosi.me"
+    "photos.mosi.me"
+  ];
+
   users.users.nginx.extraGroups = [ "rtorrent" "media" ];
   services.nginx = {
     enable = true;
@@ -53,7 +60,22 @@
     '';
     proxyTimeout = "30m";
     virtualHosts = {
-      "mosihome.duckdns.org" = {
+      "jmtoepperwien.com" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/robots.txt" = {
+            extraConfig = ''
+              rewrite ^/(.*)  $1;
+              return 200 "User-agent: *\nDisallow: /";
+            '';
+          };
+          "/.well-known/acme-challenge" = {
+            root = "/var/lib/acme/";
+          };
+        };
+      };
+      "mosi.me" = {
         forceSSL = true;
         enableACME = true;
         locations = {
@@ -186,9 +208,9 @@
           };
         };
       };
-      "mosigit.duckdns.org" = {
+      "git.mosi.me" = {
         forceSSL = true;
-        useACMEHost = "mosihome.duckdns.org";
+        useACMEHost = "mosi.me";
         locations = {
           "/robots.txt" = {
             extraConfig = ''
@@ -204,9 +226,9 @@
           };
         };
       };
-      "mosildap.duckdns.org" = {
+      "ldap.mosi.me" = {
         forceSSL = true;
-        useACMEHost = "mosihome.duckdns.org";
+        useACMEHost = "mosi.me";
         locations = {
           "/".proxyPass = "http://localhost:17170";
           "/robots.txt" = {
@@ -220,9 +242,9 @@
           };
         };
       };
-      "mosiseafile.duckdns.org" = {
+      "files.mosi.me" = {
         forceSSL = true;
-        useACMEHost = "mosihome.duckdns.org";
+        useACMEHost = "mosi.me";
         locations = {
           "/robots.txt" = {
             extraConfig = ''
@@ -235,9 +257,9 @@
           };
         };
       };
-      "mosiphotos.duckdns.org" = {
+      "photos.mosi.me" = {
         forceSSL = true;
-        useACMEHost = "mosihome.duckdns.org";
+        useACMEHost = "mosi.me";
         locations = {
           "/robots.txt" = {
             extraConfig = ''
@@ -247,6 +269,77 @@
           };
           "/.well-known/acme-challenge" = {
             root = "/var/lib/acme/";
+          };
+        };
+      };
+
+      "mosihome.duckdns.org" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/.well-known/acme-challenge" = {
+            root = "/var/lib/acme/acme-challenge";
+          };
+          "/" = {
+            extraConfig = ''
+              return 301 https://mosi.me$request_uri;
+            '';
+          };
+        };
+      };
+      "mosigit.duckdns.org" = {
+        forceSSL = true;
+        useACMEHost = "mosihome.duckdns.org";
+        locations = {
+          "/.well-known/acme-challenge" = {
+            root = "/var/lib/acme/acme-challenge";
+          };
+          "/" = {
+            extraConfig = ''
+              return 301 https://git.mosi.me$request_uri;
+            '';
+          };
+        };
+      };
+      "mosiseafile.duckdns.org" = {
+        forceSSL = true;
+        useACMEHost = "mosihome.duckdns.org";
+        locations = {
+          "/.well-known/acme-challenge" = {
+            root = "/var/lib/acme/acme-challenge";
+          };
+          "/" = {
+            extraConfig = ''
+              return 301 https://files.mosi.me$request_uri;
+            '';
+          };
+        };
+      };
+      "mosildap.duckdns.org" = {
+        forceSSL = true;
+        useACMEHost = "mosihome.duckdns.org";
+        locations = {
+          "/.well-known/acme-challenge" = {
+            root = "/var/lib/acme/acme-challenge";
+          };
+          "/" = {
+            extraConfig = ''
+              return 301 https://ldap.mosi.me$request_uri;
+            '';
+          };
+        };
+      };
+      "mosiphotos.duckdns.org" = {
+        forceSSL = true;
+        useACMEHost = "mosihome.duckdns.org";
+        locations = {
+          "/.well-known/acme-challenge" = {
+            root = "/var/lib/acme/acme-challenge";
+          };
+          "/" = {
+            extraConfig = ''
+              return 301 https://photos.mosi.me$request_uri;
+            '';
           };
         };
       };

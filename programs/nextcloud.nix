@@ -12,11 +12,11 @@
     group = "nextcloud";
   };
   services.nextcloud = {
-    package = pkgs.nextcloud30;
+    package = pkgs.nextcloud33;
     home = "${config.server.cloud_folder}/nextcloud";
     enable = true;
     https = true;
-    hostName = "mosinextcloud.duckdns.org";
+    hostName = "files.mosi.me";
     config = {
       dbtype = "pgsql";
       dbuser = "nextcloud";
@@ -47,7 +47,7 @@
 
   services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
     forceSSL = true;
-    useACMEHost = "mosihome.duckdns.org";
+    useACMEHost = "mosi.me";
   };
 
   systemd.services."nextcloud-setup" = {

@@ -24,7 +24,7 @@
       ldap_user_pass = "lldapdefaultpassword";
       ldap_user_dn = "admin";
       database_url = "postgres://%2Frun%2Fpostgresql/lldap";
-      http_url = "http://mosildap.duckdns.org";
+      http_url = "http://ldap.mosi.me";
       http_port = 17170;
       http_host = "0.0.0.0";
     };

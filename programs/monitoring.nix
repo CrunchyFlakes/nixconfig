@@ -37,8 +37,8 @@
       server = {
         http_addr = "127.0.0.1";
         http_port = 3344;
-        domain = "mosihome.duckdns.org";
-        root_url = "http://mosihome.duckdns.org/grafana/";
+        domain = "mosi.me";
+        root_url = "http://mosi.me/grafana/";
         serve_from_sub_path = true;
       };
     };

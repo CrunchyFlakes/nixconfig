@@ -215,7 +215,7 @@ in
         ];
       };
       server = {
-        hostname = "mosihome.duckdns.org";
+        hostname = "mosi.me";
         user = "mtoepperwien";
         forwardAgent = true;
       };
@@ -374,7 +374,7 @@ in
   programs.eza = {
     enable = true;
     enableZshIntegration = true;
-    enableNushellIntegration = true;
+    enableNushellIntegration = false;
     git = true;
     colors = "auto";
   };

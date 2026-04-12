@@ -8,9 +8,9 @@
 {
   services.immich = {
     enable = true;
-    settings.server.externalDomain = "https://mosiphotos.duckdns.org/";
+    settings.server.externalDomain = "https://photos.mosi.me/";
   };
-  services.nginx.virtualHosts."mosiphotos.duckdns.org" = {
+  services.nginx.virtualHosts."photos.mosi.me" = {
     locations."/" = {
       proxyPass = "http://[::1]:${toString config.services.immich.port}";
       proxyWebsockets = true;

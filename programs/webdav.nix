@@ -36,7 +36,7 @@
     };
     environmentFile = "${config.age.secrets.webdav.path}";
   };
-  services.nginx.virtualHosts."mosihome.duckdns.org" = {
+  services.nginx.virtualHosts."mosi.me" = {
     locations = {
       "/webdav/" = {
         proxyPass = "http://localhost:${toString config.services.webdav.settings.port}";

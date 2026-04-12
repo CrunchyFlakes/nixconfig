@@ -250,6 +250,7 @@
             ./programs/immich.nix
             ./programs/webdav.nix
             ./programs/matrix.nix
+            ./programs/mautrix-whatsapp.nix
 
             agenix.nixosModules.default
             nix-index-database.nixosModules.nix-index
@@ -268,7 +269,7 @@
           };
         };
         server = {
-          hostname = "mosihome.duckdns.org";
+          hostname = "mosi.me";
           profiles.system = {
             sshUser = "mtoepperwien";
             interactiveSudo = true;
