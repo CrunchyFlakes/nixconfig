@@ -102,6 +102,7 @@
             ./common.nix
             ./ssd.nix
             ./ssh.nix
+            ./programs/slurm.nix
             agenix.nixosModules.default
             spicetify-nix.nixosModules.default
             home-manager.nixosModules.home-manager

@@ -6,7 +6,7 @@ let
   maltexpshost = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ92znHGW5UwpOfOJD/fejUKrsQLpSwSh4dt1xtIrLLs";
   pi3host = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGTx5o298UgZ3gIBzFWwE+eOW3ACy0gXtdx71fcLdNvS";
   serverhost = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEbDhNXRckcZW2FoQmR6CQFNG6XANuLcijh2vc3i1C3O";
-  workpchost = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF9Wf6CWb9Z5i3Y6XqUVfK7dWyCqG3SDAV/E5HAmJOj2";
+  workpchost = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPxXGDX0EgpRRDeO3lxVZ7W6k4/vDOmXTrZ8NWXs0Be+";
   worknotebookhost = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGQLUJ+HHfsKHO2rqvj8ubCXoxZhCxlAG8i4bg8l1i1+";
 in
 {
@@ -68,5 +68,9 @@ in
   "mautrix-whatsapp.age".publicKeys = [
     maltepc
     serverhost
+  ];
+  "mungeKey.age".publicKeys = [
+    maltepc
+    workpchost
   ];
 }
