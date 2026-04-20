@@ -68,29 +68,31 @@ return require("lazy").setup({
     end
   },
   {
-    "nvim-treesitter/nvim-treesitter",
-    version = "*",
+    "neovim-treesitter/nvim-treesitter",
+    dependencies = { 'neovim-treesitter/treesitter-parser-registry' },
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      require("nvim-treesitter.configs").setup({
-        auto_install = true,
-        ensure_installed = { "c", "python", "markdown", "lua", "bash", "bibtex", "csv", "git_config" , "git_rebase" , "gitattributes" , "gitcommit" , "gitignore" , "html", "json", "latex", "make", "nix", "regex", "toml", "yaml" },
-        highlight = {
-          enable = true
-        },
+      require("nvim-treesitter").setup({
         incremental_selection = {
           enable = true
         },
         indent = {
           enable = true
         },
-        rainbow = {
-          enable = true
-        }
       })
       require("nvim-treesitter.install").compilers = { "gcc" } -- does not work with clang
     end,
+  },
+  {
+    "romus204/tree-sitter-manager.nvim",
+    dependencies = {}, -- tree-sitter CLI must be installed system-wide
+    config = function()
+      require("tree-sitter-manager").setup({
+        ensure_installed = { "c", "python", "markdown", "lua", "bash", "bibtex", "csv", "git_config" , "git_rebase" , "gitattributes" , "gitcommit" , "gitignore" , "html", "json", "latex", "make", "nix", "regex", "toml", "yaml" },
+        auto_install = true,
+      })
+    end
   },
   {
     'nmac427/guess-indent.nvim',
@@ -378,14 +380,14 @@ return require("lazy").setup({
       require('lspsaga').setup({})
     end,
     dependencies = {
-        'nvim-treesitter/nvim-treesitter', -- optional
+        'neovim-treesitter/nvim-treesitter', -- optional
         'nvim-tree/nvim-web-devicons',     -- optional
     },
   },
   { "karb94/neoscroll.nvim", config = function() require('neoscroll').setup() end },
   {
     "danymat/neogen",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = { "neovim-treesitter/nvim-treesitter" },
     config = function() require('neogen').setup({ input_after_comment = true, jump_map = "<Tab>" }) end
   },
   {
@@ -503,7 +505,7 @@ return require("lazy").setup({
       "nvim-lua/plenary.nvim",
       "hrsh7th/nvim-cmp",
       "nvim-telescope/telescope.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      "neovim-treesitter/nvim-treesitter",
     },
     opts = {
       ui = { enable = false },
@@ -552,7 +554,7 @@ return require("lazy").setup({
     "tris203/hawtkeys.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      "neovim-treesitter/nvim-treesitter",
     },
     config = {
       leader = ",",
@@ -636,7 +638,7 @@ return require("lazy").setup({
     "quarto-dev/quarto-nvim",
     dependencies = {
       "jmbuhr/otter.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      "neovim-treesitter/nvim-treesitter",
     },
     config = function()
       require("quarto").setup({
