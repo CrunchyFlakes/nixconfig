@@ -473,6 +473,10 @@ in
     enable = true;
     enableNushellIntegration = true;
   };
+
+  home.activation.cleanupNushellVendor = lib.hm.dag.entryBefore ["writeBoundary"] ''
+    rm -rf "$HOME/.local/share/nushell"
+  '';
   programs.nushell = {
     enable = true;
     settings = {
