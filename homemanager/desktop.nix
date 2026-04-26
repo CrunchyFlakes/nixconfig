@@ -510,19 +510,6 @@ in
       enable_audio_bell = false;
       notify_on_cmd_finish = "unfocused 60.0";
     };
-    keybindings = {
-      "alt+t" = "new_tab";
-      "alt+1" = "goto_tab 1";
-      "alt+2" = "goto_tab 2";
-      "alt+3" = "goto_tab 3";
-      "alt+4" = "goto_tab 4";
-      "alt+5" = "goto_tab 5";
-      "alt+6" = "goto_tab 6";
-      "alt+7" = "goto_tab 7";
-      "alt+8" = "goto_tab 8";
-      "alt+9" = "goto_tab 9";
-      "alt+0" = "goto_tab 0";
-    };
     extraConfig = ''
       map --new-mode passthrough --on-unknown passthrough ctrl+shift+space
       map --mode passthrough ctrl+shift+space pop_keyboard_mode
