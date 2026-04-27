@@ -51,6 +51,7 @@
     duf
     fzf
     fd
+    sd
     ripgrep
     zoxide
     mcfly
