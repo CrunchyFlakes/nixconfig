@@ -39,6 +39,11 @@
   # allow remote builds
   nix.settings.trusted-users = [ "mtoepperwien" ];
 
+  environment.variables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+  };
+
   imports = [
     ./common/devel.nix
   ];
@@ -91,13 +96,13 @@
     openseachest
     distrobox
     deploy-rs
-    wol  # wake-on-lan
+    wol # wake-on-lan
   ];
 
   programs.nix-ld = {
     enable = true;
     libraries = [
-      (pkgs.runCommand "steamrun-lib" {} "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
+      (pkgs.runCommand "steamrun-lib" { } "mkdir $out; ln -s ${pkgs.steam-run.fhsenv}/usr/lib64 $out/lib")
     ];
   };
   programs.nix-index-database.comma.enable = true;

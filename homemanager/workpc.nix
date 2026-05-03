@@ -1,8 +1,18 @@
-{ config, pkgs, inputs, nixpkgs-unstable, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  nixpkgs-unstable,
+  ...
+}:
 
 let
-  pkgs-unstable = import nixpkgs-unstable { system = pkgs.system; config.allowUnfree = true; };
-in {
+  pkgs-unstable = import nixpkgs-unstable {
+    system = pkgs.system;
+    config.allowUnfree = true;
+  };
+in
+{
   home.username = "mtoepperwien";
   home.homeDirectory = "/home/mtoepperwien";
   home.stateVersion = "25.05";
@@ -13,7 +23,6 @@ in {
   ];
 
   home.packages = [
-    pkgs-unstable.ollama-cuda
     pkgs.btop-cuda
   ];
 

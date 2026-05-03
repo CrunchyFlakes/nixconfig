@@ -7,7 +7,10 @@
   ...
 }:
 let
-  pkgs-unstable = import nixpkgs-unstable { system = pkgs.system; config.allowUnfree = true; };
+  pkgs-unstable = import nixpkgs-unstable {
+    system = pkgs.system;
+    config.allowUnfree = true;
+  };
   lua-packages =
     p: with p; [
       luarocks
@@ -137,7 +140,7 @@ in
       gnupg
       pinentry-qt
       pass
-      gcr  # Provides org.gnome.keyring.SystemPrompter
+      gcr # Provides org.gnome.keyring.SystemPrompter
 
       libreoffice-fresh
       grim
@@ -150,7 +153,7 @@ in
       pdfpc
       qmk
       amdgpu_top
-      solvespace  # nice and easy CAD program
+      solvespace # nice and easy CAD program
       bottles
       appimage-run
       aria2
@@ -165,6 +168,9 @@ in
     ])
     ++ (with pkgs-unstable; [
       claude-code
+    ])
+    ++ (with inputs.llm-agents.packages.${pkgs.system}; [
+      pi
     ]);
 
   home.sessionVariables = {
@@ -302,24 +308,24 @@ in
   home.pointerCursor =
     let
       getFrom = url: hash: name: {
-          gtk.enable = true;
-          x11.enable = true;
-          name = name;
-          size = 48;
-          package =
-            pkgs.runCommand "moveUp" {} ''
-              mkdir -p $out/share/icons
-              ln -s ${pkgs.fetchzip {
-                url = url;
-                hash = hash;
-              }} $out/share/icons/${name}
-          '';
-        };
+        gtk.enable = true;
+        x11.enable = true;
+        name = name;
+        size = 48;
+        package = pkgs.runCommand "moveUp" { } ''
+          mkdir -p $out/share/icons
+          ln -s ${
+            pkgs.fetchzip {
+              url = url;
+              hash = hash;
+            }
+          } $out/share/icons/${name}
+        '';
+      };
     in
-      getFrom
-        "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Ice.tar.xz"
-        "sha256-SG/NQd3K9DHNr9o4m49LJH+UC/a1eROUjrAQDSn3TAU="
-        "Bibata-Modern-Ice";
+    getFrom "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Ice.tar.xz"
+      "sha256-SG/NQd3K9DHNr9o4m49LJH+UC/a1eROUjrAQDSn3TAU="
+      "Bibata-Modern-Ice";
   programs.fuzzel = {
     enable = true;
     settings = {
@@ -401,7 +407,8 @@ in
       };
       merge.tool = "meld";
       mergetool.prompt = "false";
-      "mergetool \"meld\"".cmd = "${pkgs.meld}/bin/meld \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"";
+      "mergetool \"meld\"".cmd =
+        "${pkgs.meld}/bin/meld \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"";
     };
     signing = {
       key = "0x4AD13F07CA26E224!";
@@ -438,7 +445,12 @@ in
       ps.magick
       ps.luarocks
     ];
-    extraPackages = [ pkgs.imagemagick pkgs.pyright pkgs.gcc_multi pkgs.nodejs_24 ];
+    extraPackages = [
+      pkgs.imagemagick
+      pkgs.pyright
+      pkgs.gcc_multi
+      pkgs.nodejs_24
+    ];
     extraPython3Packages =
       ps: with ps; [
         pynvim
@@ -474,7 +486,7 @@ in
     enableNushellIntegration = true;
   };
 
-  home.activation.cleanupNushellVendor = lib.hm.dag.entryBefore ["writeBoundary"] ''
+  home.activation.cleanupNushellVendor = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
     rm -rf "$HOME/.local/share/nushell"
   '';
   programs.nushell = {
@@ -491,6 +503,8 @@ in
       overlay use ${inputs.nushell-git-aliases}
       $env.CARAPACE_LENIENT = 1
       $env.CARAPACE_BRIDGES = "zsh,fish,bash"
+      $env.EDITOR = "nvim"
+      $env.VISUAL = "nvim"
     '';
   };
   programs.kitty = {
@@ -541,7 +555,7 @@ in
           done
         }
       '')
-      ];
+    ];
     shellAliases = {
       "bat" = "bat --theme gruvbox-dark";
       "tree" = "tree -C";
@@ -645,7 +659,6 @@ in
       }
     '';
   };
-
 
   # emails
   programs.thunderbird = {
