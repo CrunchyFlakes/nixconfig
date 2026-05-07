@@ -8,9 +8,24 @@
 
   services.munge.password = config.age.secrets.mungeKey.path;
 
+  services.mysql = {
+    enable = true;
+    package = pkgs.mariadb;
+    ensureDatabases = [ "slurm_acct_db" ];
+    ensureUsers = [
+      {
+        name = "slurm";
+        ensurePermissions = {
+          "slurm_acct_db.*" = "ALL PRIVILEGES";
+        };
+      }
+    ];
+  };
+
   services.slurm = {
     server.enable = true; # slurmctld
     client.enable = true; # slurmd
+    dbdserver.enable = true;
     clusterName = "workpc";
     controlMachine = "jmtoepperwienpc";
     nodeName = [
@@ -21,7 +36,9 @@
     ];
     extraConfig = ''
       GresTypes=gpu
-      AccountingStorageType=accounting_storage/none
+      AccountingStorageType=accounting_storage/slurmdbd
+      JobAcctGatherType=jobacct_gather/linux
+      JobAcctGatherFrequency=30
     '';
     extraCgroupConfig = ''
       CgroupPlugin=disabled
@@ -31,17 +48,24 @@
         Name=gpu Type=nvidia File=/dev/nvidia0
       '')
     ];
+  };
 
-    # Keep node from staying drained after reboot
+  systemd.services.slurmctld = {
+    after = [ "slurmdbd.service" ];
+    wants = [ "slurmdbd.service" ];
   };
 
   systemd.services.slurm-resume = {
     description = "Resume slurm node after slurmd starts";
     wantedBy = [ "multi-user.target" ];
-    after = [ "slurmd.service" ];
+    after = [ "slurmctld.service" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.slurm}/bin/scontrol update node=jmtoepperwienpc State=RESUME Reason=\"boot\"";
+      Environment = "SLURM_CONF=${config.services.slurm.etcSlurm}/slurm.conf";
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+      ExecStart = ''
+        ${pkgs.slurm}/bin/scontrol update NodeName=jmtoepperwienpc State=RESUME Reason="boot"
+      '';
       RemainAfterExit = true;
     };
   };
