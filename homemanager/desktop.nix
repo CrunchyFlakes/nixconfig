@@ -106,6 +106,7 @@ in
       cairo
       # }}} neovim and plugin dependencies
       lazygit
+      typst
       # Latex
       texlive.combined.scheme-full
       (aspellWithDicts aspell-dicts)
