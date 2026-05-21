@@ -129,6 +129,7 @@ in
       virtualenv
       ripgrep
       pdfgrep
+      poppler-utils
       zathura
       kdePackages.okular
       wl-clipboard
@@ -162,6 +163,8 @@ in
       drawio
       hexchat
       pocket-casts
+      imagemagick
+      ghostscript
     ]
     ++ (with nixpkgs-unstable.legacyPackages.${pkgs.system}; [
       neovim-qt
@@ -449,6 +452,7 @@ in
     ];
     extraPackages = [
       pkgs.imagemagick
+      pkgs.ghostscript
       pkgs.pyright
       pkgs.gcc_multi
       pkgs.nodejs_24
