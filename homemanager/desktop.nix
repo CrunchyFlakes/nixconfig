@@ -85,7 +85,6 @@ in
       steam-run
       morgen
       obsidian
-      papis
       zotero
       sqlite
       # neovim and plugin dependencies {{{
@@ -169,6 +168,7 @@ in
     ])
     ++ (with pkgs-unstable; [
       claude-code
+      papis
     ])
     ++ (with inputs.llm-agents.packages.${pkgs.system}; [
       pi
