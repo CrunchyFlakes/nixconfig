@@ -112,6 +112,7 @@ in
       qutebrowser
       sway
       swaylock
+      swayidle
       hyprland
       slurp
       grim
