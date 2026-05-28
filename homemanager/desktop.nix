@@ -105,6 +105,7 @@ in
       cairo
       # }}} neovim and plugin dependencies
       lazygit
+      gh
       typst
       # Latex
       texlive.combined.scheme-full
@@ -182,7 +183,12 @@ in
     EDITOR = "nvim";
     VISUAL = "nvim";
     NIXOS_OZONE_WL = "1";
+    NPM_CONFIG_PREFIX = "$HOME/.npm-global";
   };
+
+  home.sessionPath = [
+    "$HOME/.npm-global/bin"
+  ];
 
   home.file.".config/sway/nix-managed" = {
     text = ''
@@ -441,6 +447,9 @@ in
   };
   home.file.".p10k.zsh".source = ./config/p10k.zsh;
   home.file.".taskrc".source = ./config/taskrc;
+  home.file.".local/bin/lean-ctx" = {
+    source = config.lib.file.mkOutOfStoreSymlink "/home/mtoepperwien/.npm-global/bin/lean-ctx";
+  };
 
   programs.neovim = {
     enable = true;
@@ -511,6 +520,8 @@ in
       $env.CARAPACE_BRIDGES = "zsh,fish,bash"
       $env.EDITOR = "nvim"
       $env.VISUAL = "nvim"
+      $env.NPM_CONFIG_PREFIX = ($env.HOME | path join ".npm-global")
+      $env.PATH = ($env.PATH | prepend ($env.HOME | path join ".npm-global" "bin"))
     '';
   };
   programs.kitty = {
