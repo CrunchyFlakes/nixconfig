@@ -28,6 +28,7 @@ let
     exec systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
     exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
     exec "${pkgs.gtkgreet}/bin/gtkgreet -l; swaymsg exit"
+    exec ${pkgs.swayidle}/bin/swayidle -w timeout 60 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
 
     bindsym Mod4+shift+e exec swaynag \
     -t warning \
