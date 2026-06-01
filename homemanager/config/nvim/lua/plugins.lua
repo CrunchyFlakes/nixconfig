@@ -521,7 +521,7 @@ return require("lazy").setup({
         return ws
       end)(),
       daily_notes = {
-        folder = "daily_notes",
+        folder = "Daily",
       },
       -- Optional, customize how note file names are generated given the ID, target directory, and title.
       ---@param spec { id: string, dir: obsidian.Path, title: string|? }
