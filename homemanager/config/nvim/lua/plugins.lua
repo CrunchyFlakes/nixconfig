@@ -470,6 +470,28 @@ return require("lazy").setup({
       vim.g.magma_image_provider = "ueberzug"
     end
   },
+  {
+    'Vigemus/iron.nvim',
+    config = function()
+      local iron = require("iron.core")
+      local view = require("iron.view")
+      local common = require("iron.fts.common")
+
+      iron.setup {
+        config = {
+          scratch_repl = true,
+          repl_definition = {
+            python = {
+              command = { "python3" },
+              format = common.bracketed_paste_python,
+            },
+          },
+          repl_open_cmd = view.split.vertical.botright(0.4),
+        },
+        ignore_blank_lines = true,
+      }
+    end,
+  },
   { "GCBallesteros/vim-textobj-hydrogen", dependencies = { { 'kana/vim-textobj-user' } } },
   -- }}} Jupyter Notebooks in Neovim
 
@@ -624,6 +646,10 @@ return require("lazy").setup({
         markdown = {
           enabled = true,
           filetypes = { "markdown" },
+        },
+        html = {
+          enabled = true,
+          filetypes = { "markdown", "html" },
         }
       }, -- do whatever you want with image.nvim's integrations
       max_width = 100, -- tweak to preference
@@ -633,6 +659,15 @@ return require("lazy").setup({
       window_overlap_clear_enabled = true,
       window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
     },
+  },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
   },
   {
     "quarto-dev/quarto-nvim",
@@ -664,8 +699,12 @@ return require("lazy").setup({
         },
         codeRunner = {
           enabled = true,
-          default_method = "molten",
+          default_method = "iron", -- "molten", "slime", "iron" or <function>
+          ft_runners = {}, -- filetype to runner, ie. `{ python = "molten" }`.
+          -- Takes precedence over `default_method`
+          never_run = { 'yaml' }, -- filetypes which are never sent to a code runner
         },
+
       })
     end,
   },
