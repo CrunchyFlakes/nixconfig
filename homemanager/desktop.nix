@@ -455,6 +455,702 @@ in
     enable = true;
     defaultEditor = true;
     package = nixpkgs-unstable.legacyPackages.${pkgs.system}.neovim-unwrapped;
+    plugins = with pkgs.vimPlugins; [
+      # neovim-gui-shim must be first (was priority=9999 in lazy) so GUI shims are available early
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "neovim-gui-shim";
+          version = "2026-06-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "equalsraf";
+            repo = "neovim-gui-shim";
+            rev = "4d10bf3f68b9c0903bd1d9e456571d1d2ec16fde";
+            hash = "sha256-sfbVVFJSNpgVBYxg/kOW/rQB29goIOwMk5GDrtBfOAI=";
+          };
+        };
+        type = "lua";
+        config = "";
+      }
+      # tpope set
+      vim-sensible
+      vim-abolish
+      vim-vinegar
+      vim-eunuch
+      # wordmotion
+      vim-wordmotion
+      # nix
+      nix-develop-nvim
+      # plenary-nvim: required by obsidian-nvim, hawtkeys, neogit, fzf-lua etc.
+      plenary-nvim
+      # simple setup() plugins
+      { plugin = marks-nvim;        type = "lua"; config = "require('marks').setup()"; }
+      { plugin = nvim-colorizer-lua; type = "lua"; config = "require('colorizer').setup()"; }
+      { plugin = neoscroll-nvim;    type = "lua"; config = "require('neoscroll').setup()"; }
+      {
+        plugin = guess-indent-nvim;
+        type = "lua";
+        config = ''
+          require('guess-indent').setup {
+            auto_cmd = true,
+            override_editorconfig = false,
+            filetype_exclude = { "netrw", "tutor" },
+            buftype_exclude = { "help", "nofile", "terminal", "prompt" },
+            on_tab_options = {
+              ["expandtab"] = false,
+              ["tabstop"] = 2,
+              ["softtabstop"] = 2,
+              ["shiftwidth"] = 2,
+            },
+            on_space_options = {
+              ["expandtab"] = true,
+              ["tabstop"] = "detected",
+              ["softtabstop"] = "detected",
+              ["shiftwidth"] = "detected",
+            },
+          }
+        '';
+      }
+      # treesitter: replaces neovim-treesitter/nvim-treesitter + tree-sitter-manager.nvim
+      {
+        plugin = nvim-treesitter.withAllGrammars;
+        type = "lua";
+        config = ''
+          require("nvim-treesitter").setup({
+            incremental_selection = { enable = true },
+            indent = { enable = true },
+            context_commentstring = { enable = true },
+          })
+          -- Sync treesitter grammars on first run (was :TSUpdate in lazy)
+          vim.api.nvim_create_autocmd("User", {
+            pattern = "TSSourcesReady",
+            callback = function()
+              vim.cmd("TSUpdateSync")
+            end,
+            once = true,
+          })
+        '';
+      }
+      {
+        plugin = nvim-treesitter-context;
+        type = "lua";
+        config = "require('treesitter-context').setup({ max_lines = 5 })";
+      }
+      {
+        plugin = rainbow-delimiters-nvim;
+        type = "lua";
+        config = ''
+          local rainbow = require("rainbow-delimiters")
+          require("rainbow-delimiters.setup").setup({
+            strategy = {
+              [""] = rainbow.strategy["global"],
+              vim = rainbow.strategy["local"],
+            },
+            query = {
+              [""] = "rainbow-delimiters",
+              lua = "rainbow-blocks",
+            },
+            highlight = {
+              "RainbowDelimiterRed", "RainbowDelimiterYellow", "RainbowDelimiterBlue",
+              "RainbowDelimiterOrange", "RainbowDelimiterGreen", "RainbowDelimiterViolet",
+              "RainbowDelimiterCyan",
+            },
+            -- Skip telescope, quickfix, neogit buffers (no parsable content)
+            blacklist = {
+              "TelescopeResults";
+              "TelescopePrompt";
+              "TelescopeMultiSelection";
+              "qf";
+              "NeogitCommitView";
+              "NeogitConsole";
+              "NeogitDiffView";
+              "NeogitLogView";
+              "NeogitNotification";
+              "NeogitPopup";
+              "NeogitStatus";
+              "NeogitStashView";
+            },
+          })
+        '';
+      }
+      # LSP + completion
+      # fallback icons for unknown filetypes
+      { plugin = nvim-web-devicons; type = "lua"; config = "require('nvim-web-devicons').setup({ default = true })"; }
+      { plugin = nvim-lspconfig;    type = "lua"; config = "require('lsp-config')"; }
+      friendly-snippets
+      {
+        plugin = luasnip;
+        type = "lua";
+        config = "require('luasnip.loaders.from_vscode').lazy_load()";
+      }
+      {
+        plugin = blink-cmp;
+        type = "lua";
+        config = ''
+          require("blink.cmp").setup({
+            keymap = { preset = "default" },
+            appearance = { nerd_font_variant = "mono" },
+            completion = { documentation = { auto_show = true } },
+            sources = { default = { "lsp", "path", "snippets", "buffer" } },
+            snippets = { preset = "luasnip" },
+            fuzzy = { implementation = "prefer_rust_with_warning" },
+          })
+        '';
+      }
+      {
+        plugin = lspsaga-nvim;
+        type = "lua";
+        config = "require('lspsaga').setup({})"; 
+      }
+      # Colorscheme + statusline + winbar
+      {
+        plugin = gruvbox-material;
+        type = "lua";
+        config = ''
+          vim.g.gruvbox_material_better_performance = 1
+          vim.cmd([[colorscheme gruvbox-material]])
+        '';
+      }
+      {
+        plugin = lualine-nvim;
+        type = "lua";
+        config = ''
+          require("lualine").setup({
+            options = {
+              theme = "gruvbox-material",
+              always_show_tabline = true,
+            },
+            tabline = {
+              lualine_b = {{
+                function()
+                  local dot_git = vim.fs.find({ ".git" }, { upward = true, stop = vim.loop.os_homedir() })[1]
+                  if dot_git then
+                    return vim.fn.fnamemodify(dot_git, ":h:t")
+                  else
+                    return " " .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~")
+                  end
+                end,
+              }},
+              lualine_x = { "branch" },
+            },
+            sections = {
+              lualine_a = { "mode" },
+              lualine_b = { "diff", "diagnostics" },
+              lualine_c = {{ "filename", path = 1 }},
+              lualine_x = { "encoding", "fileformat" },
+              lualine_y = { "progress" },
+              lualine_z = { "location" },
+            },
+            inactive_sections = {
+              lualine_a = {}, lualine_b = {},
+              lualine_c = {{ "filename", path = 1 }},
+              lualine_x = { "location" },
+              lualine_y = {}, lualine_z = {},
+            },
+          })
+        '';
+      }
+      telescope-fzf-native-nvim
+      telescope-project-nvim
+      {
+        plugin = telescope-nvim;
+        type = "lua";
+        config = ''
+          -- Defer telescope setup and extension loading to VimEnter so they don't block startup
+          vim.api.nvim_create_autocmd("VimEnter", {
+            callback = function()
+              require("telescope").setup({
+                pickers = {
+                  live_grep  = { find_command = { "rg", "--hidden", "--glob", "!**/.git/*", "-L" } },
+                  find_files = {
+                    find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", "-L" },
+                    mappings = {
+                      n = {
+                        ["cd"] = function(prompt_bufnr)
+                          local selection = require("telescope.actions.state").get_selected_entry()
+                          local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+                          require("telescope.actions").close(prompt_bufnr)
+                          vim.cmd(string.format("silent lcd %s", dir))
+                        end,
+                      },
+                    },
+                  },
+                },
+                extensions = {
+                  project = {
+                    hidden_files = true,
+                    theme = "dropdown",
+                    order_by = "asc",
+                    search_by = "title",
+                    sync_with_nvim_tree = true,
+                    on_project_selected = function(prompt_bufnr)
+                      local project_actions = require("telescope._extensions.project.actions")
+                      project_actions.change_working_directory(prompt_bufnr, false)
+                      local localconf = io.open("./.nvim.lua", "r")
+                      if localconf ~= nil then
+                        local selection = vim.fn.input("Found .nvim.lua \nChoose action: [l]oad [i]gnore: ")
+                        if selection == "l" then dofile("./.nvim.lua") end
+                      end
+                    end,
+                  },
+                },
+              })
+              require("telescope").load_extension("fzf")
+              require("telescope").load_extension("project")
+            end,
+            once = true,
+          })
+          -- TelescopeResults filetype setup
+          vim.api.nvim_create_autocmd("FileType", { pattern = "TelescopeResults", command = "setlocal nofoldenable" })
+        '';
+      }
+      {
+        plugin = dropbar-nvim;
+        type = "lua";
+        config = ''
+          vim.api.nvim_create_autocmd("VimEnter", {
+            callback = function()
+              require("dropbar").setup()
+              local dropbar_api = require("dropbar.api")
+              vim.keymap.set("n", "<Leader>;", dropbar_api.pick,                { desc = "Pick symbols in winbar" })
+              vim.keymap.set("n", "[;",        dropbar_api.goto_context_start,  { desc = "Go to start of current context" })
+              vim.keymap.set("n", "];",        dropbar_api.select_next_context, { desc = "Select next context" })
+            end,
+            once = true,
+          })
+        '';
+      }
+      # Mini suite
+      {
+        plugin = mini-nvim;
+        type = "lua";
+        config = ''
+          require("mini.align").setup()
+          require("mini.comment").setup()
+          require("mini.pairs").setup()
+          require("mini.surround").setup()
+          require("mini.icons").setup({})
+        '';
+      }
+      # File manager
+      { plugin = oil-nvim; type = "lua"; config = "require('oil').setup({})"; }
+      # Editing / UI tools
+      {
+        plugin = nvim-neoclip-lua;
+        type = "lua";
+        config = ''
+          require("neoclip").setup()
+          require("telescope").load_extension("neoclip")
+        '';
+      }
+      { plugin = twilight-nvim;     type = "lua"; config = "require('twilight').setup()"; }
+      { plugin = fzf-vim; }
+      {
+        plugin = nvim-bqf;
+        type = "lua";
+        config = ''
+          vim.api.nvim_create_autocmd("FileType", {
+            pattern = "qf",
+            callback = function()
+              require("bqf").setup()
+            end,
+            once = true,
+          })
+        '';
+      }
+      {
+        plugin = flash-nvim;
+        type = "lua";
+        config = ''
+          require("flash").setup({ labels = "arstgmneioqwfpbjluyzxcdvkh" })
+          vim.keymap.set({"n","x","o"}, "<leader>s", function() require("flash").jump() end,              { desc = "Flash" })
+          vim.keymap.set({"n","x","o"}, "<leader>S", function() require("flash").treesitter() end,       { desc = "Flash Treesitter" })
+          vim.keymap.set("o",           "<leader>r", function() require("flash").remote() end,            { desc = "Remote Flash" })
+          vim.keymap.set({"o","x"},     "<leader>R", function() require("flash").treesitter_search() end, { desc = "Treesitter Search" })
+          vim.keymap.set("c",           "<c-s>",     function() require("flash").toggle() end,            { desc = "Toggle Flash Search" })
+        '';
+      }
+      {
+        plugin = which-key-nvim;
+        type = "lua";
+        config = ''
+          vim.o.timeout = true
+          vim.o.timeoutlen = 300
+          require("which-key").setup({})
+        '';
+      }
+      { plugin = zen-mode-nvim; type = "lua"; config = "require('zen-mode').setup({ window = { width = 0.85 } })"; }
+      {
+        plugin = nvim-ufo;
+        type = "lua";
+        config = ''
+          vim.o.foldcolumn = "0"
+          vim.o.foldlevel = 99
+          vim.o.foldlevelstart = 99
+          vim.o.foldenable = true
+          vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+          vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+          require("ufo").setup({
+            provider_selector = function(bufnr, filetype, buftype)
+              return { "treesitter", "indent" }
+            end,
+          })
+        '';
+      }
+      {
+        plugin = toggleterm-nvim;
+        type = "lua";
+        config = ''
+          require("toggleterm").setup({
+            size = function(term)
+              if term.direction == "horizontal" then return 15
+              elseif term.direction == "vertical" then return vim.o.columns * 0.4
+              end
+            end,
+            shade_terminals = false,
+            hide_numbers = true,
+            autochdir = false,
+            start_in_insert = false,
+            insert_mappings = true,
+            terminal_mappings = true,
+            persist_size = true,
+            persist_mode = true,
+            close_on_exit = true,
+            clear_env = false,
+            auto_scroll = true,
+            winbar = { enabled = false },
+            responsiveness = { horizontal_breakpoint = 135 },
+          })
+        '';
+      }
+      {
+        plugin = neogen;
+        type = "lua";
+        config = "require('neogen').setup({ input_after_comment = true, jump_map = \"<Tab>\" })";
+      }
+      { plugin = todo-comments-nvim; type = "lua"; config = "require('todo-comments').setup({})"; }
+      # Git plugins
+      { plugin = vim-fugitive; }
+      { plugin = gitsigns-nvim; type = "lua"; config = "require('gitsigns').setup()"; }
+      neogit
+      diffview-nvim
+      fzf-lua
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "diffs.nvim";
+          version = "2026-06-05";
+          src = pkgs.fetchFromGitHub {
+            owner = "barrettruth";
+            repo = "diffs.nvim";
+            rev = "d280baf3e937a487038766f51156dd41ceb0f8e7";
+            hash = "sha256-KDT6smaU1tUHMd3UkLt1IqX1N7nv74L0ffnKLCFuckA=";
+          };
+        };
+        type = "lua";
+        config = ''
+          vim.g.diffs = {
+            integrations = {
+              fugitive = true,
+              neogit = true,
+              neojj = true,
+              gitsigns = true,
+            },
+          }
+        '';
+      }
+      # --- Jupyter / notebook plugins ---
+      {
+        plugin = pkgs.vimPlugins.jupytext-nvim;
+        type = "lua";
+        config = ''
+          require("jupytext").setup({
+            style = "markdown",
+            output_extension = "md",
+            force_ft = "markdown",
+          })
+        '';
+      }
+      {
+        plugin = pkgs.vimPlugins.iron-nvim;
+        type = "lua";
+        config = ''
+          local iron = require("iron.core")
+          local view = require("iron.view")
+          local common = require("iron.fts.common")
+          iron.setup {
+            config = {
+              scratch_repl = true,
+              repl_definition = {
+                python = {
+                  command = { "python3" },
+                  format = common.bracketed_paste_python,
+                },
+              },
+              repl_open_cmd = view.split.vertical.botright(0.4),
+            },
+            ignore_blank_lines = true,
+          }
+        '';
+      }
+      {
+        plugin = pkgs.vimPlugins.molten-nvim;
+        type = "lua";
+        config = ''
+          vim.g.molten_image_provider = "image.nvim"
+          vim.g.molten_wrap_output = true
+          vim.g.molten_virt_text_output = true
+          vim.g.molten_virt_lines_off_by_1 = true
+          vim.g.molten_enter_output_behavior = "open_and_enter"
+        '';
+      }
+      pkgs.vimPlugins.vim-textobj-user
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "vim-textobj-hydrogen";
+          version = "2024-01-01";
+          src = pkgs.fetchFromGitHub {
+            owner = "GCBallesteros";
+            repo = "vim-textobj-hydrogen";
+            rev = "e6f9a6b26a3524615bac347503c35327636fab72";
+            hash = "sha256-uYsgVhCjF/AyUO/sfnUDYaAbB1Fm3u+5O60v2bN6Fs4=";
+          };
+        };
+        type = "lua";
+        config = "";
+      }
+      {
+        plugin = pkgs.vimPlugins.otter-nvim;
+        type = "lua";
+        config = "require('otter').setup({})";
+      }
+      {
+        plugin = pkgs.vimPlugins.quarto-nvim;
+        type = "lua";
+        config = ''
+          require("quarto").setup({
+            lspFeatures = {
+              languages = { "r", "python", "rust", "html" },
+              chunks = "all",
+              diagnostics = {
+                enabled = true,
+                triggers = { "BufWritePost" },
+              },
+              completion = {
+                enabled = true,
+              },
+            },
+            keymap = {
+              hover = "H",
+              definition = "gd",
+              rename = "<leader>rn",
+              references = "gr",
+              format = "<leader>gf",
+            },
+            codeRunner = {
+              enabled = true,
+              default_method = "iron",
+              ft_runners = {},
+              never_run = { "yaml" },
+            },
+          })
+        '';
+      }
+      {
+        plugin = pkgs.vimPlugins.image-nvim;
+        type = "lua";
+        config = ''
+          require("image").setup({
+            backend = "kitty",
+            integrations = {
+              markdown = {
+                enabled = true,
+                filetypes = { "markdown" },
+              },
+              html = {
+                enabled = true,
+                filetypes = { "markdown", "html" },
+              },
+            },
+            max_width = 100,
+            max_height = 12,
+            max_height_window_percentage = math.huge,
+            max_width_window_percentage = math.huge,
+            window_overlap_clear_enabled = true,
+            window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+          })
+        '';
+      }
+      {
+        plugin = pkgs.vimPlugins.render-markdown-nvim;
+      }
+      # --- Complex / conditional plugins (#8) ---
+      # vimtex self-limits to tex/latex/plaintex filetypes — no explicit guard needed
+      {
+        plugin = pkgs.vimPlugins.vimtex;
+        type = "viml";
+        config = "";
+      }
+      {
+        plugin = pkgs.vimPlugins.conform-nvim;
+        type = "lua";
+        config = ''
+          require("conform").setup({
+            formatters_by_ft = {
+              lua = { "stylua" },
+              python = { "ruff_format" },
+              rust = { "rustfmt", lsp_format = "fallback" },
+              javascript = { "prettierd", "prettier", stop_after_first = true },
+            },
+            format_on_save = function()
+              local ignore_filetypes = { "lua" }
+              if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
+                vim.notify("range formatting for " .. vim.bo.filetype .. " not working properly.")
+                return
+              end
+              local hunks = require("gitsigns").get_hunks()
+              if hunks == nil then return end
+              local format = require("conform").format
+              local function format_range()
+                if next(hunks) == nil then
+                  vim.notify("Done formatting git hunks!", "info", { title = "formatting" })
+                  return
+                end
+                local hunk = nil
+                while next(hunks) ~= nil and (hunk == nil or hunk.type == "delete") do
+                  hunk = table.remove(hunks)
+                end
+                if hunk ~= nil and hunk.type ~= "delete" then
+                  local start = hunk.added.start
+                  local last = start + hunk.added.count
+                  local last_hunk_line = vim.api.nvim_buf_get_lines(0, last - 2, last - 1, true)[1]
+                  local range = { start = { start, 0 }, ["end"] = { last - 1, last_hunk_line:len() } }
+                  format({ range = range, async = true, lsp_format = "fallback" }, function()
+                    vim.defer_fn(function() format_range() end, 1)
+                  end)
+                end
+              end
+              format_range()
+            end,
+          })
+        '';
+      }
+      {
+        plugin = pkgs.vimPlugins.obsidian-nvim;
+        type = "lua";
+        config = ''
+          local home = vim.loop.os_homedir()
+          if vim.uv.fs_stat(home .. "/vaults/personal") or vim.uv.fs_stat(home .. "/vaults/phd") then
+            local ws = {}
+            if vim.uv.fs_stat(home .. "/vaults/personal") then
+              table.insert(ws, { name = "personal", path = "~/vaults/personal" })
+            end
+            if vim.uv.fs_stat(home .. "/vaults/phd") then
+              table.insert(ws, { name = "phd", path = "~/vaults/phd" })
+            end
+            require("obsidian").setup({
+              ui = { enable = false },
+              workspaces = ws,
+              daily_notes = { folder = "Daily" },
+              note_path_func = function(spec)
+                return (spec.dir / spec.title):with_suffix(".md")
+              end,
+              completion = { nvim_cmp = false, min_chars = 2 },
+              new_notes_location = "current_dir",
+              wiki_link_func = "prepend_note_path",
+              search = {
+                sort_by = "modified",
+                sort_reversed = true,
+              },
+              legacy_commands = false,
+            })
+          end
+        '';
+      }
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "hawtkeys.nvim";
+          version = "2026-06-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "tris203";
+            repo = "hawtkeys.nvim";
+            rev = "27495e633c071ab0881d337e0f59bfbbb19e0ac2";
+            hash = "sha256-NJHvxR068KzBeHV6BGt408zAgZMbUfVq/Emh9Ai4cLg=";
+          };
+          # these modules require nvim-treesitter at load time
+          nvimSkipModules = [ "hawtkeys.duplicates" "hawtkeys.score" "hawtkeys.show_all" "hawtkeys.ts" "hawtkeys.ui" ];
+        };
+        type = "lua";
+        config = ''
+          require("hawtkeys").setup({
+            leader = ",",
+            keyboardLayout = "qwerty",
+            ["wk.register"] = { method = "which_key" },
+            ["lazy"] = { method = "lazy" },
+          })
+        '';
+      }
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "pastify.nvim";
+          version = "2026-06-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "TobinPalmer";
+            repo = "pastify.nvim";
+            rev = "4a1d1e03c3ae725ee4af796deca8c7c169ef626e";
+            hash = "sha256-EFRq0IzSS66dE75/gi6RrdqZV9laUhNNpTIer6dNz2A=";
+          };
+        };
+        type = "lua";
+        config = ''
+          require("pastify").setup({ opts = { save = "local_file" } })
+        '';
+      }
+      # --- Plugins not in nixpkgs (custom builds) ---
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "highlight-current-n.nvim";
+          version = "2026-06-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "rktjmp";
+            repo = "highlight-current-n.nvim";
+            rev = "1225d1ad3fee74c3e6a6d258f25a1952b927cb76";
+            hash = "sha256-Bel83ytJCgQ6MK4qWKU557b+OI/HdMSriFoqYoCgpzA=";
+          };
+        };
+        type = "lua";
+        config = ''
+          vim.keymap.set("n", "n", "<Plug>(highlight-current-n-n)")
+          vim.keymap.set("n", "N", "<Plug>(highlight-current-n-N)")
+        '';
+      }
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "beacon.nvim";
+          version = "2026-06-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "danilamihailov";
+            repo = "beacon.nvim";
+            rev = "098ff96c33874339d5e61656f3050dbd587d6bd5";
+            hash = "sha256-x/79mRkwwT+sNrnf8QqocsaQtM+Rx6BUvVj5Nnv5JDY=";
+          };
+        };
+        type = "lua";
+        config = "";
+      }
+      {
+        plugin = pkgs.vimUtils.buildVimPlugin {
+          pname = "scrollEOF.nvim";
+          version = "2026-06-10";
+          src = pkgs.fetchFromGitHub {
+            owner = "Aasim-A";
+            repo = "scrollEOF.nvim";
+            rev = "e462b9a07b8166c3e8011f1dcbc6bf68b67cd8d7";
+            hash = "sha256-y7yOCRSGTtQcFyWVkGe3xQqstHZMQKayxtqkOVlZ4PM=";
+          };
+        };
+        type = "lua";
+        config = "require('scrollEOF').setup()";
+      }
+    ];
     extraLuaPackages = ps: [
       ps.magick
       ps.luarocks
@@ -486,13 +1182,7 @@ in
       vim.loader.enable()
       vim.g.mapleader = ","
       require("vimsettings")
-      require("bootstrap/lazy")
-      require("plugins")
       require("keybindings")
-      local status, ts_install = pcall(require, "nvim-treesitter.install")
-      if(status) then
-        ts_install.compilers = { "${pkgs.gcc_multi}/bin/gcc" }
-      end
     '';
   };
 

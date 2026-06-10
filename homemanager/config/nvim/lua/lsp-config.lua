@@ -1,5 +1,8 @@
 -- UI stuff
 local signs = { Error = "⚡", Warn = "⚠ ", Hint = "💡", Info = " " }
+
+-- LSP capabilities from blink.cmp (replaces nvim-cmp)
+local capabilities = require("blink.cmp").get_lsp_capabilities()
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })

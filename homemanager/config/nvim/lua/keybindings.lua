@@ -7,8 +7,6 @@ vim.keymap.set("n", "<leader>qo", ":lopen<CR>")  -- open quickfix window
 
 -- LSP bindings
 vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
-vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename)
-
 -- Lspsaga
 vim.keymap.set("n", "<leader>ld", ":Lspsaga goto_definition<CR>")
 vim.keymap.set("n", "<leader>lr", ":Lspsaga finder<CR>")
@@ -29,15 +27,16 @@ vim.keymap.set("t", "<A-CR>", "<C-\\><C-n>:ToggleTerm<CR>")
 vim.keymap.set("n", "<C-A-/>", ":ToggleTerm direction=float<CR>")
 vim.keymap.set("n", "<A-/>", ":ToggleTerm direction=horizontal<CR>")
 
--- Telescope bindings
-local builtin = require('telescope.builtin')
-local project = require('telescope').extensions.project
-vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
-vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
-vim.keymap.set("n", "<leader>fp", project.project, {})
-vim.keymap.set("n", "<leader>ft", ":TodoTelescope<CR>", {})
+-- Telescope bindings (lazy-loaded on first use)
+vim.keymap.set("n", "<leader>ff", function() require('telescope.builtin').find_files() end, { desc = "Find files" })
+vim.keymap.set("n", "<leader>fg", function() require('telescope.builtin').live_grep() end, { desc = "Live grep" })
+vim.keymap.set("n", "<leader>fb", function() require('telescope.builtin').buffers() end, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>fh", function() require('telescope.builtin').help_tags() end, { desc = "Help tags" })
+vim.keymap.set("n", "<leader>fp", function()
+  local project = require('telescope').extensions.project
+  project.project()
+end, { desc = "Projects" })
+vim.keymap.set("n", "<leader>ft", function() require('telescope.builtin').live_grep({ search_file = 'TODO' }) end, { desc = "Find TODO" })
 
 -- Obsidian bindings
 vim.keymap.set("n", "<leader>dn", ":ObsidianToday<CR>", {})
@@ -72,14 +71,11 @@ vim.keymap.set("n", "<Leader>md", ":MoltenDelete<CR>", { desc = "delete Molten c
 vim.keymap.set("n", "<Leader>os", ":noautocmd MoltenEnterOutput<CR>",
     { silent = true, desc = "show/enter output" })
 
--- Quarto
-local runner = require("quarto.runner")
-vim.keymap.set("n", "<Leader>rc", runner.run_cell,  { desc = "run cell", silent = true })
-vim.keymap.set("n", "<Leader>ra", runner.run_above, { desc = "run cell and above", silent = true })
-vim.keymap.set("n", "<Leader>rA", runner.run_all,   { desc = "run all cells", silent = true })
-vim.keymap.set("n", "<Leader>rl", runner.run_line,  { desc = "run line", silent = true })
-vim.keymap.set("v", "<Leader>r",  runner.run_range, { desc = "run visual range", silent = true })
-vim.keymap.set("n", "<Leader>RA", function()
-  runner.run_all(true)
-end, { desc = "run all cells of all languages", silent = true })
+-- Quarto (deferred: quarto.runner requires otter.nvim which is set up by home-manager after keybindings.lua loads)
+vim.keymap.set("n", "<Leader>rc", function() require("quarto.runner").run_cell() end,  { desc = "run cell", silent = true })
+vim.keymap.set("n", "<Leader>ra", function() require("quarto.runner").run_above() end, { desc = "run cell and above", silent = true })
+vim.keymap.set("n", "<Leader>rA", function() require("quarto.runner").run_all() end,   { desc = "run all cells", silent = true })
+vim.keymap.set("n", "<Leader>rl", function() require("quarto.runner").run_line() end,  { desc = "run line", silent = true })
+vim.keymap.set("v", "<Leader>r",  function() require("quarto.runner").run_range() end, { desc = "run visual range", silent = true })
+vim.keymap.set("n", "<Leader>RA", function() require("quarto.runner").run_all(true) end, { desc = "run all cells of all languages", silent = true })
 -- }}} Jupyter Notebooks

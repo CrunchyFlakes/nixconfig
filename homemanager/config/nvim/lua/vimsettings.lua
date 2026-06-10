@@ -1,3 +1,5 @@
+vim.cmd [[filetype plugin indent on]]
+
 vim.opt.showmode = false
 
 vim.opt.number = true
