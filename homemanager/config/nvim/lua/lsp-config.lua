@@ -70,3 +70,7 @@ vim.lsp.enable({ "clangd" })
 -- Nix
 vim.lsp.config("nixd", { capabilities = capabilities, })
 vim.lsp.enable({ "nixd" })
+
+-- LaTeX
+vim.lsp.config("texlab", { capabilities = capabilities })
+vim.lsp.enable({ "texlab" })

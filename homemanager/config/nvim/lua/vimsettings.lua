@@ -9,8 +9,6 @@ vim.opt.signcolumn = "yes"
 vim.opt.scrolloff = 10
 vim.opt.sidescrolloff = 10
 
-vim.cmd [[filetype plugin indent on]]
-
 vim.opt.ignorecase = true
 
 vim.opt.foldenable = true

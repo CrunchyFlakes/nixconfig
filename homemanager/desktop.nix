@@ -729,6 +729,8 @@ in
           require("mini.pairs").setup()
           require("mini.surround").setup()
           require("mini.icons").setup({})
+          require("mini.bufremove").setup()
+          vim.keymap.set("n", "<leader>x", function() MiniBufremove.delete() end, { desc = "Close buffer" })
         '';
       }
       # File manager
@@ -776,6 +778,13 @@ in
           vim.o.timeout = true
           vim.o.timeoutlen = 300
           require("which-key").setup({})
+          require("which-key").add({
+            { "<leader>f", group = "find" },
+            { "<leader>l", group = "lsp" },
+            { "<leader>r", group = "run" },
+            { "<leader>o", group = "output" },
+            { "<leader>d", group = "daily/notes" },
+          })
         '';
       }
       { plugin = zen-mode-nvim; type = "lua"; config = "require('zen-mode').setup({ window = { width = 0.85 } })"; }
@@ -1161,6 +1170,7 @@ in
       pkgs.pyright
       pkgs.gcc_multi
       pkgs.nodejs_24
+      pkgs.texlab
     ];
     extraPython3Packages =
       ps: with ps; [

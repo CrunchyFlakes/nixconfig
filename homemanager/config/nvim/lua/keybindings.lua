@@ -5,6 +5,10 @@ vim.keymap.set("n", "U", "<C-r>")
 vim.keymap.set("n", "<leader>qc", ":lclose<CR>") -- close quickfix window
 vim.keymap.set("n", "<leader>qo", ":lopen<CR>")  -- open quickfix window
 
+-- Diagnostic navigation
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
+
 -- LSP bindings
 vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
 -- Lspsaga
@@ -36,7 +40,7 @@ vim.keymap.set("n", "<leader>fp", function()
   local project = require('telescope').extensions.project
   project.project()
 end, { desc = "Projects" })
-vim.keymap.set("n", "<leader>ft", function() require('telescope.builtin').live_grep({ search_file = 'TODO' }) end, { desc = "Find TODO" })
+vim.keymap.set("n", "<leader>ft", ":TodoTelescope<CR>", { desc = "Find TODOs" })
 
 -- Obsidian bindings
 vim.keymap.set("n", "<leader>dn", ":ObsidianToday<CR>", {})
@@ -68,8 +72,7 @@ vim.keymap.set("n", "<Leader>rr", ":MoltenReevaluateCell<CR>", { desc = "re-eval
 vim.keymap.set("v", "<Leader>r", ":<C-u>MoltenEvaluateVisual<CR>gv<ESC>", { desc = "execute visual selection", silent = true })
 vim.keymap.set("n", "<Leader>oh", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
 vim.keymap.set("n", "<Leader>md", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
-vim.keymap.set("n", "<Leader>os", ":noautocmd MoltenEnterOutput<CR>",
-    { silent = true, desc = "show/enter output" })
+
 
 -- Quarto (deferred: quarto.runner requires otter.nvim which is set up by home-manager after keybindings.lua loads)
 vim.keymap.set("n", "<Leader>rc", function() require("quarto.runner").run_cell() end,  { desc = "run cell", silent = true })
