@@ -554,13 +554,17 @@ in
               "RainbowDelimiterOrange", "RainbowDelimiterGreen", "RainbowDelimiterViolet",
               "RainbowDelimiterCyan",
             },
-            -- Only attach when treesitter has a grammar for this filetype.
-            -- Scratch buffers (telescope, blink.cmp, neogit, qf, …) have
-            -- invented filetypes with no treesitter language mapping, so
-            -- get_lang returns nil and we skip them — no blacklist needed.
+            -- Guard against rainbow-delimiters 0.10.0 bug: pcall(get_parser)
+            -- returns true,nil (no exception) for some buffers, then crashes
+            -- on nil:register_cbs. Condition checks the full call chain so
+            -- attach is only called when a live parser is available.
             condition = function(bufnr)
               local ft = vim.bo[bufnr].filetype
-              return ft ~= "" and vim.treesitter.language.get_lang(ft) ~= nil
+              if ft == "" then return false end
+              local lang = vim.treesitter.language.get_lang(ft)
+              if not lang then return false end
+              local ok, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+              return ok and parser ~= nil
             end,
           })
         '';
