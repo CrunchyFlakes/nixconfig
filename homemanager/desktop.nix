@@ -539,29 +539,28 @@ in
         plugin = rainbow-delimiters-nvim;
         type = "lua";
         config = ''
-          -- Defer setup to VimEnter so the FileType autocmd is only registered
-          -- after startup. This matches lazy.nvim's default lazy-load behaviour
-          -- and avoids errors on scratch buffers (blink.cmp, telescope, etc.)
-          -- that are created during startup before any real file opens.
-          vim.api.nvim_create_autocmd("VimEnter", {
-            once = true,
-            callback = function()
-              local rainbow = require("rainbow-delimiters")
-              require("rainbow-delimiters.setup").setup({
-                strategy = {
-                  [""] = rainbow.strategy["global"],
-                  vim = rainbow.strategy["local"],
-                },
-                query = {
-                  [""] = "rainbow-delimiters",
-                  lua = "rainbow-blocks",
-                },
-                highlight = {
-                  "RainbowDelimiterRed", "RainbowDelimiterYellow", "RainbowDelimiterBlue",
-                  "RainbowDelimiterOrange", "RainbowDelimiterGreen", "RainbowDelimiterViolet",
-                  "RainbowDelimiterCyan",
-                },
-              })
+          local rainbow = require("rainbow-delimiters")
+          require("rainbow-delimiters.setup").setup({
+            strategy = {
+              [""] = rainbow.strategy["global"],
+              vim = rainbow.strategy["local"],
+            },
+            query = {
+              [""] = "rainbow-delimiters",
+              lua = "rainbow-blocks",
+            },
+            highlight = {
+              "RainbowDelimiterRed", "RainbowDelimiterYellow", "RainbowDelimiterBlue",
+              "RainbowDelimiterOrange", "RainbowDelimiterGreen", "RainbowDelimiterViolet",
+              "RainbowDelimiterCyan",
+            },
+            -- Only attach when treesitter has a grammar for this filetype.
+            -- Scratch buffers (telescope, blink.cmp, neogit, qf, …) have
+            -- invented filetypes with no treesitter language mapping, so
+            -- get_lang returns nil and we skip them — no blacklist needed.
+            condition = function(bufnr)
+              local ft = vim.bo[bufnr].filetype
+              return ft ~= "" and vim.treesitter.language.get_lang(ft) ~= nil
             end,
           })
         '';
