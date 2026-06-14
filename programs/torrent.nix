@@ -114,9 +114,9 @@ in
   };
 
   environment.systemPackages = [
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.flood
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.flood
     pkgs.unpackerr
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.recyclarr
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.recyclarr
     pkgs.cross-seed
     pkgs.unrar
     autotorrent2Package

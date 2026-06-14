@@ -28,7 +28,6 @@
   # This will not activate Wake-on-LAN as it is more system specific
   boot.initrd.network = {
     enable = lib.mkDefault true;
-    udhcpc.enable = true;
     ssh = {
       enable = true;
       hostKeys = [
@@ -39,13 +38,17 @@
         ./authorized_keys
       ];
     };
-    postCommands = let
-      disk = "cryptroot";  # [TODO: this should be dynamically acquired]
-      # disk = config.disko.devices.disk.main.content.luks.name;
-    in ''
-      echo 'cryptsetup open /dev/disk/by-partlabel/luks ${disk} --type luks && echo > /tmp/continue' >> /root/.profile
-      echo 'starting sshd...'
-    '';
-
   };
+
+  boot.initrd.systemd.network = {
+    enable = true;
+    networks."10-initrd-dhcp" = {
+      matchConfig.Type = "ether";
+      networkConfig.DHCP = "yes";
+    };
+  };
+
+  boot.initrd.systemd.contents."/root/.profile" = lib.mkIf
+    (config.boot.initrd.luks.devices != {})
+    { text = "systemd-tty-ask-password-agent --watch\n"; };
 }

@@ -11,6 +11,9 @@
   environment.systemPackages = with pkgs; [
     tor-browser
     pulsemixer
+    pipewire.jack
+    tenacity
+    audacity
 
     # gnome icon themes (needed for some programs)
     adwaita-icon-theme
@@ -37,6 +40,7 @@
     libfido2
     opensc
     pcsclite
+    android-tools
   ];
 
   services.printing.enable = true;
@@ -120,6 +124,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    jack.enable = true;
   };
 
   # containers with podman
@@ -135,9 +140,6 @@
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   # enable nixos-enter into other architectures
   boot.binfmt.preferStaticEmulators = true;
-
-  # Android ADB
-  programs.adb.enable = true;
 
   # Allows for direct unicode printing
   i18n.inputMethod = {
@@ -253,7 +255,7 @@
 
   programs.spicetify =
   let
-    spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+    spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   in
   {
     enable = true;
@@ -271,7 +273,7 @@
 
   services.protonmail-bridge = {
     enable = true;
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.protonmail-bridge;
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.protonmail-bridge;
   };
   systemd.user.services.protonmail-bridge = {
     wantedBy = [ "default.target" ];

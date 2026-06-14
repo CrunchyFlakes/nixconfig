@@ -23,7 +23,7 @@
 
   services.sonarr = {
     enable = true;
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.sonarr;
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.sonarr;
     openFirewall = true;
   };
 
@@ -40,7 +40,7 @@
 
   services.radarr = {
     enable = true;
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.radarr;
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.radarr;
     openFirewall = true;
   };
 
@@ -57,7 +57,7 @@
 
   services.lidarr = {
     enable = true;
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.lidarr;
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.lidarr;
     openFirewall = true;
   };
 
@@ -89,7 +89,7 @@
 
   services.readarr = {
     enable = true;
-    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.readarr;
+    package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.readarr;
     openFirewall = true;
   };
   ## Calibre Server for Readarr

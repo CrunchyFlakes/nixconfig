@@ -31,7 +31,7 @@
     luajit
   ];
   documentation.dev.enable = true;
-  documentation.man.generateCaches = true;
+  documentation.man.cache.enable = true;
 
   # allow on the fly editing of hosts file
   # will be overwritten on reboot

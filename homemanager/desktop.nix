@@ -8,7 +8,7 @@
 }:
 let
   pkgs-unstable = import nixpkgs-unstable {
-    system = pkgs.system;
+    system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
   };
   lua-packages =
@@ -94,14 +94,14 @@ in
       jq
       inkscape
       imv
-      nodePackages.npm
+      nodejs-slim
       wget
       curl
       lua-language-server
       clang-tools
       pyright
       nixd
-      nixfmt-rfc-style
+      nixfmt
       cairo
       # }}} neovim and plugin dependencies
       lazygit
@@ -167,7 +167,7 @@ in
       imagemagick
       ghostscript
     ]
-    ++ (with nixpkgs-unstable.legacyPackages.${pkgs.system}; [
+    ++ (with nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}; [
       neovim-qt
       neovide
     ])
@@ -175,7 +175,7 @@ in
       claude-code
       papis
     ])
-    ++ (with inputs.llm-agents.packages.${pkgs.system}; [
+    ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
       pi
     ]);
 
@@ -199,33 +199,31 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "*" = {
-        forwardAgent = false;
-        serverAliveInterval = 30;
-        serverAliveCountMax = 5;
-        compression = true;
-        addKeysToAgent = "30m";
-        hashKnownHosts = false;
-        userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "auto";
-        controlPath = "~/.ssh/master-%r@%n:%p";
-        controlPersist = "10h";
+        ForwardAgent = false;
+        ServerAliveInterval = 30;
+        ServerAliveCountMax = 5;
+        Compression = true;
+        AddKeysToAgent = "30m";
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "auto";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "10h";
       };
-      workCluster = {
-        match = "originalhost luis-cluster*,work*,kisski-cluster* exec \"bash -c '! nc -zw1 %h 22'\"";
-        proxyJump = "work-jump";
+      "Match originalhost luis-cluster*,work*,kisski-cluster* exec \"bash -c '! nc -zw1 %h 22'\"" = {
+        ProxyJump = "work-jump";
       };
-      pc2Cluster = {
-        match = "originalhost n2-jumphost,otus-jumphost exec \"bash -c '! nc -zw1 %h 22'\"";
-        proxyJump = "workpc";
+      "Match originalhost n2-jumphost,otus-jumphost exec \"bash -c '! nc -zw1 %h 22'\"" = {
+        ProxyJump = "workpc";
       };
       homepc = {
-        user = "mtoepperwien";
-        hostname = "192.168.1.149";
-        proxyJump = "server";
-        forwardAgent = true;
-        remoteForwards = [
+        User = "mtoepperwien";
+        HostName = "192.168.1.149";
+        ProxyJump = "server";
+        ForwardAgent = true;
+        RemoteForward = [
           {
             bind.address = "/run/user/1000/gnupg/S.gpg-agent";
             host.address = "/run/user/1000/gnupg/S.gpg-agent.extra";
@@ -233,30 +231,30 @@ in
         ];
       };
       server = {
-        hostname = "mosi.me";
-        user = "mtoepperwien";
-        forwardAgent = true;
+        HostName = "mosi.me";
+        User = "mtoepperwien";
+        ForwardAgent = true;
       };
       tobiserver = {
-        hostname = "accounts.fritz-schubert-akademie.de";
+        HostName = "accounts.fritz-schubert-akademie.de";
       };
       luis-cluster = {
-        hostname = "login.cluster.uni-hannover.de";
-        user = "nhwptoem";
+        HostName = "login.cluster.uni-hannover.de";
+        User = "nhwptoem";
       };
       luis-cluster-transfer = {
-        hostname = "transfer.cluster.uni-hannover.de";
-        user = "nhwptoem";
+        HostName = "transfer.cluster.uni-hannover.de";
+        User = "nhwptoem";
       };
       work-jump = {
-        hostname = "ssh1.ai.uni-hannover.de";
-        user = "toepperwien";
+        HostName = "ssh1.ai.uni-hannover.de";
+        User = "toepperwien";
       };
       workpc = {
-        hostname = "jmtoepperwienpc.ai.uni-hannover.de";
-        user = "mtoepperwien";
-        forwardAgent = true;
-        remoteForwards = [
+        HostName = "jmtoepperwienpc.ai.uni-hannover.de";
+        User = "mtoepperwien";
+        ForwardAgent = true;
+        RemoteForward = [
           {
             bind.address = "/run/user/1000/gnupg/S.gpg-agent";
             host.address = "/run/user/1000/gnupg/S.gpg-agent.extra";
@@ -264,54 +262,54 @@ in
         ];
       };
       workpc-bootup = {
-        hostname = "jmtoepperwienpc.ai.uni-hannover.de";
-        user = "root";
-        extraOptions."HostKeyAlias" = "workpc-bootup";
+        HostName = "jmtoepperwienpc.ai.uni-hannover.de";
+        User = "root";
+        HostKeyAlias = "workpc-bootup";
       };
       otus-jumphost = {
-        hostname = "fe.otus.pc2.uni-paderborn.de";
-        user = "inxml20";
-        identityFile = "~/.config/ssh/yubikey.pub";
-        identitiesOnly = true;
+        HostName = "fe.otus.pc2.uni-paderborn.de";
+        User = "inxml20";
+        IdentityFile = "~/.config/ssh/yubikey.pub";
+        IdentitiesOnly = true;
       };
       otus-login1 = {
-        hostname = "login1.ln2025.pc2.uni-paderborn.de";
-        user = "inxml20";
-        proxyJump = "otus-jumphost";
-        identityFile = "~/.config/ssh/yubikey.pub";
-        identitiesOnly = true;
+        HostName = "login1.ln2025.pc2.uni-paderborn.de";
+        User = "inxml20";
+        ProxyJump = "otus-jumphost";
+        IdentityFile = "~/.config/ssh/yubikey.pub";
+        IdentitiesOnly = true;
       };
       otus-login2 = {
-        hostname = "login2.ln2025.pc2.uni-paderborn.de";
-        user = "inxml20";
-        proxyJump = "otus-jumphost";
-        identityFile = "~/.config/ssh/yubikey.pub";
-        identitiesOnly = true;
+        HostName = "login2.ln2025.pc2.uni-paderborn.de";
+        User = "inxml20";
+        ProxyJump = "otus-jumphost";
+        IdentityFile = "~/.config/ssh/yubikey.pub";
+        IdentitiesOnly = true;
       };
 
       n2-jumphost = {
-        hostname = "fe.noctua2.pc2.uni-paderborn.de";
-        user = "inxml20";
-        identityFile = "~/.config/ssh/yubikey.pub";
-        identitiesOnly = true;
+        HostName = "fe.noctua2.pc2.uni-paderborn.de";
+        User = "inxml20";
+        IdentityFile = "~/.config/ssh/yubikey.pub";
+        IdentitiesOnly = true;
       };
       n2login1 = {
-        hostname = "n2login1.ab2021.pc2.uni-paderborn.de";
-        user = "inxml20";
-        proxyJump = "n2-jumphost";
-        identityFile = "~/.config/ssh/yubikey.pub";
-        identitiesOnly = true;
+        HostName = "n2login1.ab2021.pc2.uni-paderborn.de";
+        User = "inxml20";
+        ProxyJump = "n2-jumphost";
+        IdentityFile = "~/.config/ssh/yubikey.pub";
+        IdentitiesOnly = true;
       };
       n2login2 = {
-        hostname = "n2login2.ab2021.pc2.uni-paderborn.de";
-        user = "inxml20";
-        proxyJump = "n2-jumphost";
-        identityFile = "~/.config/ssh/yubikey.pub";
-        identitiesOnly = true;
+        HostName = "n2login2.ab2021.pc2.uni-paderborn.de";
+        User = "inxml20";
+        ProxyJump = "n2-jumphost";
+        IdentityFile = "~/.config/ssh/yubikey.pub";
+        IdentitiesOnly = true;
       };
       kisski-cluster = {
-        hostname = "kisski01.cluster.uni-hannover.de";
-        user = "mtoepper";
+        HostName = "kisski01.cluster.uni-hannover.de";
+        User = "mtoepper";
       };
     };
   };
@@ -454,7 +452,9 @@ in
   programs.neovim = {
     enable = true;
     defaultEditor = true;
-    package = nixpkgs-unstable.legacyPackages.${pkgs.system}.neovim-unwrapped;
+    package = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.neovim-unwrapped;
+    withPython3 = true;
+    withRuby = true;
     plugins = with pkgs.vimPlugins; [
       # neovim-gui-shim must be first (was priority=9999 in lazy) so GUI shims are available early
       {
@@ -1185,7 +1185,7 @@ in
         kaleido
         pylatexenc
       ];
-    extraLuaConfig = ''
+    initLua = ''
       vim.loader.enable()
       vim.g.mapleader = ","
       require("vimsettings")
@@ -1307,6 +1307,7 @@ in
 
   programs.firefox = {
     enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
     nativeMessagingHosts = [ pkgs.fnott ];
   };
 

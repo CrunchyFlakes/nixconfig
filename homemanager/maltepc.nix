@@ -28,7 +28,7 @@
       ];
     })
     # wine
-    wineWowPackages.stagingFull
+    wineWow64Packages.stagingFull
     winetricks
     # }}} Gaming
   ];
