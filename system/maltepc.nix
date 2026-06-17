@@ -57,5 +57,20 @@
   };
 };
 
+  systemd.services.rawhid-connector = {
+    description = "RawHID bridge between splitkb Kyria and Ploopy trackball";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-udevd.service" ];
+    wants = [ "systemd-udevd.service" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.rawhid-connector}/bin/rawhid-connector";
+      Restart = "on-failure";
+      RestartSec = "5s";
+      User = "mtoepperwien";
+      Group = "input";
+    };
+  };
+
   system.stateVersion = "22.11"; # Did you read the comment?
 }

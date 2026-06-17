@@ -33,6 +33,10 @@
       url = "github:AndyFilter/YeetMouse?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
+    rawhid_connector = {
+      url = "github:jmtoepperwien/RawHID-Connector";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -58,6 +62,7 @@
       disko,
       deploy-rs,
       yeetmouse,
+      rawhid_connector,
       nix-index-database,
       nushell-git-aliases,
       llm-agents,
@@ -158,6 +163,7 @@
               };
             }
             yeetmouse.nixosModules.default
+            rawhid_connector.nixosModules.rawhid-connector
             nix-index-database.nixosModules.nix-index
           ];
         };

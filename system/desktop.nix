@@ -110,6 +110,7 @@
       "adbusers"
       "input"
       "kvm"
+      "plugdev"
     ];
     shell = pkgs.nushell;
     openssh.authorizedKeys.keyFiles = [

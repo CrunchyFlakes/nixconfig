@@ -359,6 +359,26 @@
         "url": "https://raw.githubusercontent.com/KamilKleina/git-aliases.nu/refs/heads/main/git-aliases.nu"
       }
     },
+    "rawhid_connector": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-stable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1751365997,
+        "narHash": "sha256-DTBLc7K0CVeE4bTRVoqCkrzcjizOCCSCZIwuZqOBryw=",
+        "owner": "jmtoepperwien",
+        "repo": "RawHID-Connector",
+        "rev": "a226f999e988e52ccdbf22bb3bcf5f449fb7e762",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jmtoepperwien",
+        "repo": "RawHID-Connector",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -371,6 +391,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nushell-git-aliases": "nushell-git-aliases",
+        "rawhid_connector": "rawhid_connector",
         "spicetify-nix": "spicetify-nix",
         "yeetmouse": "yeetmouse"
       }
