@@ -18,7 +18,7 @@
 
   services.mautrix-whatsapp = {
     environmentFile = config.age.secrets."mautrix-whatsapp".path;
-    enable = true;
+    enable = false;
     # continuwuity handles appservice registration via admin commands,
     # not via the synapse app_service_config_files mechanism.
     registerToSynapse = false;

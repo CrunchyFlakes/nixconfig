@@ -9,7 +9,7 @@
 
 {
   services.prometheus = {
-    enable = true;
+    enable = false;
     exporters = {
       node = {
         enable = true;
@@ -32,7 +32,7 @@
   };
 
   services.grafana = {
-    enable = true;
+    enable = false;
     settings = {
       server = {
         http_addr = "127.0.0.1";

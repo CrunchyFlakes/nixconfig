@@ -7,6 +7,9 @@
   ...
 }:
 
+let
+  hasLuks = config.boot.initrd.luks.devices != {};
+in
 {
   programs.ssh.package = pkgs.openssh_hpn;
   services.openssh = {
@@ -24,10 +27,10 @@
   networking.firewall.allowedTCPPorts = [ 22 ];
   programs.mosh.enable = true;
 
-  # Enable luks decryption via ssh
+  # Enable luks decryption via ssh (only when LUKS is actually configured)
   # This will not activate Wake-on-LAN as it is more system specific
-  boot.initrd.network = {
-    enable = lib.mkDefault true;
+  boot.initrd.network = lib.mkIf hasLuks {
+    enable = true;
     ssh = {
       enable = true;
       hostKeys = [
@@ -40,7 +43,7 @@
     };
   };
 
-  boot.initrd.systemd.network = {
+  boot.initrd.systemd.network = lib.mkIf hasLuks {
     enable = true;
     networks."10-initrd-dhcp" = {
       matchConfig.Type = "ether";
@@ -48,7 +51,7 @@
     };
   };
 
-  boot.initrd.systemd.contents."/root/.profile" = lib.mkIf
-    (config.boot.initrd.luks.devices != {})
-    { text = "systemd-tty-ask-password-agent --watch\n"; };
+  boot.initrd.systemd.contents."/root/.profile" = lib.mkIf hasLuks {
+    text = "systemd-tty-ask-password-agent --watch\n";
+  };
 }

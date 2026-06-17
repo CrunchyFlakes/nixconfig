@@ -8,18 +8,22 @@
 {
   fileSystems."/export/movies" = {
     device = "${config.server.media_folder}/movies";
+    fsType = "none";
     options = [ "bind" ];
   };
   fileSystems."/export/series" = {
     device = "${config.server.media_folder}/series";
+    fsType = "none";
     options = [ "bind" ];
   };
   fileSystems."/export/books" = {
     device = "${config.server.media_folder}/books";
+    fsType = "none";
     options = [ "bind" ];
   };
   fileSystems."/export/music" = {
     device = "${config.server.media_folder}/music";
+    fsType = "none";
     options = [ "bind" ];
   };
 

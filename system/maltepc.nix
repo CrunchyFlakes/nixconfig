@@ -18,7 +18,10 @@
   ];
 
   hardware.cpu.amd.updateMicrocode = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [ "amdgpu.ppfeaturemask=0xffffffff" ];
+  };
 
   # gpu
   hardware.graphics = {
@@ -46,7 +49,7 @@
   programs = {
   gamescope = {
     enable = true;
-    capSysNice = true;
+    capSysNice = false;
   };
   steam = {
     enable = true;
