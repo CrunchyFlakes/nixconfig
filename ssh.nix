@@ -51,7 +51,8 @@ in
     };
   };
 
-  boot.initrd.systemd.contents."/root/.profile" = lib.mkIf hasLuks {
-    text = "systemd-tty-ask-password-agent --watch\n";
-  };
+  # Make SSH login in the initrd auto-prompt for the LUKS password:
+  # setting root's shell to the systemd password agent means an SSH
+  # session in the initrd surfaces any pending cryptsetup query on its TTY.
+  boot.initrd.systemd.users.root.shell = lib.mkIf hasLuks "/bin/systemd-tty-ask-password-agent";
 }

@@ -94,7 +94,7 @@ in
       jq
       inkscape
       imv
-      nodejs-slim
+      nodejs
       wget
       curl
       lua-language-server
