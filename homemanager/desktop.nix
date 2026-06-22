@@ -212,7 +212,7 @@ in
         ControlPath = "~/.ssh/master-%r@%n:%p";
         ControlPersist = "10h";
       };
-      "Match originalhost luis-cluster*,work*,kisski-cluster* exec \"bash -c '! nc -zw1 %h 22'\"" = {
+      "Match final originalhost luis-cluster*,work*,!work-jump,kisski-cluster* exec \"bash -c '! nc -zw1 %h 22'\"" = {
         ProxyJump = "work-jump";
       };
       "Match originalhost n2-jumphost,otus-jumphost exec \"bash -c '! nc -zw1 %h 22'\"" = {
