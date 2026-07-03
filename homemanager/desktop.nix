@@ -137,6 +137,8 @@ in
       nerd-fonts.sauce-code-pro
       nerd-fonts.fira-code
       nerd-fonts.droid-sans-mono
+      ibm-plex
+      fira
       xdg-utils
       unzip
       # gnupg
