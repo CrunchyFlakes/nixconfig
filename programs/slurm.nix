@@ -55,7 +55,29 @@
     wants = [ "slurmdbd.service" ];
   };
 
-  systemd.services.slurm-resume = {
+  systemd.services.slurm-resume = let
+    resumeScript = pkgs.writeShellScript "slurm-resume" ''
+      set -u
+      # Wait briefly for slurmctld to accept commands, in case it just started.
+      for _ in $(seq 1 10); do
+        ${pkgs.slurm}/bin/scontrol ping >/dev/null 2>&1 && break
+        ${pkgs.coreutils}/bin/sleep 1
+      done
+
+      state=$(${pkgs.slurm}/bin/scontrol -i show node jmtoepperwienpc 2>/dev/null \
+        | ${pkgs.gnugrep}/bin/grep -oP 'State=\K\S+' | ${pkgs.coreutils}/bin/head -n1 || true)
+
+      case "$state" in
+        DOWN|DRAIN|DRAINING|FAIL|NOT_RESPONDING|UNKNOWN)
+          ${pkgs.slurm}/bin/scontrol update NodeName=jmtoepperwienpc State=RESUME Reason=boot
+          ;;
+        *)
+          echo "slurm-resume: node state is '$state', skipping RESUME"
+          exit 0
+          ;;
+      esac
+    '';
+  in {
     description = "Resume slurm node after slurmd starts";
     wantedBy = [ "multi-user.target" ];
     after = [ "slurmctld.service" ];
@@ -63,9 +85,7 @@
       Type = "oneshot";
       Environment = "SLURM_CONF=${config.services.slurm.etcSlurm}/slurm.conf";
       ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-      ExecStart = ''
-        ${pkgs.slurm}/bin/scontrol update NodeName=jmtoepperwienpc State=RESUME Reason="boot"
-      '';
+      ExecStart = resumeScript;
       RemainAfterExit = true;
     };
   };
